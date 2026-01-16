@@ -2,7 +2,6 @@ package jeagerx
 
 import (
 	"context"
-	"os"
 
 	"github.com/soyacen/grocer/otelx"
 	"go.opentelemetry.io/otel"
@@ -36,12 +35,7 @@ func (r *RetryConfig) ToHttpRetryConfig() otlptracehttp.RetryConfig {
 }
 
 func SetStdOutTracerProvider(ctx context.Context, config *Config) {
-	opts := []stdouttrace.Option{
-		stdouttrace.WithWriter(os.Stdout),
-		stdouttrace.WithPrettyPrint(),
-		stdouttrace.WithoutTimestamps(),
-	}
-	exporter, err := stdouttrace.New(opts...)
+	exporter, err := stdouttrace.New()
 	if err != nil {
 		panic(err)
 	}
