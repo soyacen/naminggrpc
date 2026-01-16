@@ -1,0 +1,113 @@
+syntax = "proto3";
+
+package redisx;
+option go_package = "./;redisx";
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/wrappers.proto";
+
+message Config {
+  map<string, Options> configs = 1;
+}
+
+message Options {
+  message TLSOptions {
+    string cert_file   = 1;
+    string key_file    = 2;
+    string ca_file     = 3;
+    string server_name = 4;
+  }
+
+  message ClusterOptions {
+    google.protobuf.Int32Value max_redirects    = 1;
+    google.protobuf.BoolValue  read_only        = 2;
+    google.protobuf.BoolValue  route_by_latency = 3;
+    google.protobuf.BoolValue  route_randomly   = 4;
+  }
+
+  message FailOverOptions {
+    // The sentinel master name.
+    google.protobuf.StringValue master_name = 1;
+  }
+
+  message MaintNotificationsConfig {
+    // Placeholder for maint notifications config
+    google.protobuf.BoolValue   enabled = 1;
+    google.protobuf.StringValue channel = 2;
+  }
+
+  // Either a single address or a seed list of host:port addresses
+  // of cluster/sentinel nodes.
+  repeated string addrs = 1;
+
+  // client_name will execute the `CLIENT SETNAME ClientName` command for each conn.
+  google.protobuf.StringValue client_name = 2;
+
+  // db to be selected after connecting to the server.
+  // Only single-node and failover clients.
+  google.protobuf.Int32Value db = 3;
+
+  // Common options.
+  google.protobuf.Int32Value  protocol = 4;
+  google.protobuf.StringValue username = 5;
+  google.protobuf.StringValue password = 6;
+
+  google.protobuf.StringValue sentinel_username = 7;
+  google.protobuf.StringValue sentinel_password = 8;
+
+  google.protobuf.Int32Value max_retries       = 9;
+  google.protobuf.Duration   min_retry_backoff = 10;
+  google.protobuf.Duration   max_retry_backoff = 11;
+
+  google.protobuf.Duration  dial_timeout            = 12;
+  google.protobuf.Duration  read_timeout            = 13;
+  google.protobuf.Duration  write_timeout           = 14;
+  google.protobuf.BoolValue context_timeout_enabled = 15;
+
+  // PoolFIFO uses FIFO mode for each node connection pool GET/PUT (default LIFO).
+  google.protobuf.BoolValue pool_fifo = 16;
+
+  google.protobuf.Int32Value pool_size          = 17;
+  google.protobuf.Duration   pool_timeout       = 18;
+  google.protobuf.Int32Value min_idle_conns     = 19;
+  google.protobuf.Int32Value max_idle_conns     = 20;
+  google.protobuf.Int32Value max_active_conns   = 21;
+  google.protobuf.Duration   conn_max_idle_time = 22;
+  google.protobuf.Duration   conn_max_lifetime  = 23;
+
+  // ReadBufferSize is the size of the bufio.Reader buffer for each connection.
+  // Larger buffers can improve performance for commands that return large responses.
+  // Smaller buffers can improve memory usage for larger pools.
+  google.protobuf.Int32Value read_buffer_size = 24;
+
+  // WriteBufferSize is the size of the bufio.Writer buffer for each connection.
+  // Larger buffers can improve performance for large pipelines and commands with many arguments.
+  // Smaller buffers can improve memory usage for larger pools.
+  google.protobuf.Int32Value write_buffer_size = 25;
+
+  TLSOptions tls_config = 26;
+
+  // Only cluster clients.
+  ClusterOptions cluster_options = 27;
+
+  // Only failover clients.
+  FailOverOptions failover_options = 28;
+
+  google.protobuf.BoolValue   disable_identity = 29;
+  google.protobuf.StringValue identity_suffix  = 30;
+
+  // FailingTimeoutSeconds is the timeout in seconds for marking a cluster node as failing.
+  google.protobuf.Int32Value failing_timeout_seconds = 31;
+
+  google.protobuf.BoolValue unstable_resp3 = 32;
+
+  // IsClusterMode can be used when only one Addrs is provided (e.g. Elasticache supports setting up cluster mode with configuration endpoint).
+  google.protobuf.BoolValue is_cluster_mode = 33;
+
+  // MaintNotificationsConfig provides configuration for maintnotifications upgrades.
+  MaintNotificationsConfig maint_notifications_config = 34;
+
+  google.protobuf.BoolValue enable_tracing = 35;
+  google.protobuf.BoolValue enable_metrics = 36;
+
+}

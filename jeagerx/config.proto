@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package jeagerx;
+option go_package = "./;jeagerx";
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/wrappers.proto";
+
+message Config {
+  // SamplingRate 采样率
+  google.protobuf.DoubleValue sampling_rate = 1;
+  // GRPCOptions
+  GRPCOptions grpc_options = 2;
+  // HTTPOptions
+  HTTPOptions http_options = 3;
+}
+
+message GRPCOptions {
+  google.protobuf.StringValue endpoint            = 1;
+  google.protobuf.StringValue endpoint_url        = 2;
+  google.protobuf.BoolValue   insecure            = 3;
+  map<string, string>         headers             = 4;
+  google.protobuf.StringValue compressor          = 5;
+  google.protobuf.Duration    reconnection_period = 6;
+  google.protobuf.Duration    timeout             = 7;
+  google.protobuf.StringValue service_config      = 8;
+  TLSConfig                   tls_config          = 9;
+  // GRPCConn is not directly supported in proto, handled separately
+  RetryConfig retry = 10;
+}
+
+message HTTPOptions {
+  google.protobuf.StringValue endpoint     = 1;
+  google.protobuf.StringValue endpoint_url = 2;
+  google.protobuf.Int32Value  compression  = 3;
+  google.protobuf.StringValue url_path     = 4;
+  TLSConfig                   tls_config   = 5;
+  google.protobuf.BoolValue   insecure     = 6;
+  map<string, string>         headers      = 7;
+  google.protobuf.Duration    timeout      = 8;
+  RetryConfig                 retry        = 9;
+}
+
+// 定义 TLS 配置
+message TLSConfig {
+  google.protobuf.BoolValue   insecure_skip_verify = 1;  // 跳过证书验证
+  google.protobuf.StringValue server_name          = 2;  // 服务器名称
+  google.protobuf.StringValue cert_file            = 3;  // 证书文件路径
+  google.protobuf.StringValue key_file             = 4;  // 私钥文件路径
+  google.protobuf.StringValue ca_file              = 5;  // CA 证书文件路径
+  google.protobuf.BoolValue   enable_client_auth   = 6;  // 是否启用客户端认证
+}
+
+message RetryConfig {
+  google.protobuf.BoolValue enabled          = 1;
+  google.protobuf.Duration  initial_interval = 2;
+  google.protobuf.Duration  max_interval     = 3;
+  google.protobuf.Duration  max_elapsed_time = 4;
+}
