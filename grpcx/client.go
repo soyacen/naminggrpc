@@ -15,12 +15,12 @@ type ConsumerConfig struct {
 	Target string `mapstructure:"target" json:"target" yaml:"target"`
 }
 
-func NewClient() (*grpc.ClientConn, error) {
-	return grpc.NewClient(
-		"127.0.0.1:7777",
-		DialogOptions()...,
-	)
-}
+// func NewClient() (*grpc.ClientConn, error) {
+// 	return grpc.NewClient(
+// 		"127.0.0.1:7777",
+// 		DialogOptions()...,
+// 	)
+// }
 
 func UnaryClientInterceptor(mdw ...grpc.UnaryClientInterceptor) grpc.DialOption {
 	return grpc.WithChainUnaryInterceptor(append([]grpc.UnaryClientInterceptor{}, mdw...)...)

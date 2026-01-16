@@ -9,7 +9,6 @@ import (
 	kafkax "github.com/soyacen/grocer/kafkax"
 	mongox "github.com/soyacen/grocer/mongox"
 	nacosx "github.com/soyacen/grocer/nacosx"
-	otelx "github.com/soyacen/grocer/otelx"
 	redisx "github.com/soyacen/grocer/redisx"
 	registryx "github.com/soyacen/grocer/registryx"
 )
@@ -22,7 +21,6 @@ var Provider = wire.NewSet(
 	kafkax.Provider,
 	mongox.Provider,
 	nacosx.Provider,
-	otelx.Provider,
 	redisx.Provider,
 	registryx.Provider,
 )
