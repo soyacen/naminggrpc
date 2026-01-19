@@ -1,0 +1,31 @@
+# K8s Job配置文件，用于一次性执行job
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: grocer-job
+  namespace: default
+  labels:
+    app: grocer
+spec:
+  template:
+    spec:
+      containers:
+      - name: grocer-job
+        image: soyacen/grocer:latest  # 替换为实际的镜像名称
+        command:
+        - /bin/sh
+        - -c
+        - ./project job  # 执行job命令
+        env:
+        # 添加必要的环境变量
+        - name: ENV
+          value: "production"
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+      restartPolicy: OnFailure

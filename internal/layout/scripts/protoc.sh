@@ -4,6 +4,35 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+#!/bin/sh
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+if [ ! $(command -v protoc-gen-go) ]
+then
+	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+	protoc-gen-go --version
+fi
+
+if [ ! $(command -v protoc-gen-go-grpc) ]
+then
+	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+	protoc-gen-go-grpc --version
+fi
+
+if [ ! $(command -v protoc-gen-goose) ]
+then
+	go install github.com/soyacen/goose/cmd/protoc-gen-goose@latest
+	protoc-gen-goose --version
+fi
+
+if [ ! $(command -v protoc-gen-validate-go) ]
+then
+	go install github.com/envoyproxy/protoc-gen-validate/cmd/protoc-gen-validate-go@latest
+fi
+
 # 获取脚本所在目录（项目根目录）
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
@@ -22,7 +51,7 @@ fi
 # 使用find命令查找项目中所有的 .proto 文件，排除pkg/layout/third_party和internal/layout/third_party目录
 PROTO_FILES=()
 while IFS= read -r -d '' file; do
-    if [[ "$file" != *"internal/layout"* && "$file" != *"internal/layout/third_party"* ]]; then
+    if [[ "$file" != *"third_party"* ]]; then
         PROTO_FILES+=("$file")
     fi
 done < <(find . -name "*.proto" -type f -print0)
@@ -38,7 +67,7 @@ echo "发现 ${#PROTO_FILES[@]} 个 proto 文件..."
 echo "正在编译 proto 文件..."
 protoc \
   --proto_path=. \
-  --proto_path=./internal/layout/third_party \
+  --proto_path=./third_party \
   --go_out=. \
   --go_opt=paths=source_relative \
   "${PROTO_FILES[@]}"

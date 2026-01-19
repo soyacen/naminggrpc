@@ -1,0 +1,99 @@
+# HTTP 服务的 Kubernetes 部署配置
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grocer-http
+  namespace: default
+  labels:
+    app: grocer-http
+spec:
+  replicas: 3  # 根据需要调整副本数
+  selector:
+    matchLabels:
+      app: grocer-http
+  template:
+    metadata:
+      labels:
+        app: grocer-http
+    spec:
+      containers:
+      - name: grocer-http
+        image: soyacen/grocer:latest  # 替换为实际的镜像名称
+        command: ["./project"]
+        args: ["http"]  # 启动 HTTP 服务
+        ports:
+        - containerPort: 8080  # HTTP 默认端口，可根据需要调整
+          name: http
+        env:
+        # 添加必要的环境变量
+        - name: ENV
+          value: "production"
+        - name: HTTP_PORT
+          value: "8080"
+        imagePullPolicy: Always  # 总是拉取最新镜像
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        startupProbe:
+          httpGet:
+            path: /health  # 健康检查路径，根据实际服务实现调整
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 30
+          successThreshold: 1
+        livenessProbe:
+          httpGet:
+            path: /health  # 健康检查路径，根据实际服务实现调整
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready  # 就绪检查路径，根据实际服务实现调整
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+# HTTP 服务的 Service 配置
+apiVersion: v1
+kind: Service
+metadata:
+  name: grocer-http-service
+  namespace: default
+  labels:
+    app: grocer-http
+spec:
+  selector:
+    app: grocer-http
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      name: http
+  type: LoadBalancer  # 使用 LoadBalancer 类型，外部可以访问，可根据需要调整为 NodePort 或 Ingress
+---
+# HTTP 服务的 Ingress 配置（可选）
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grocer-http-ingress
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: grocer-http.local  # 根据实际情况调整域名
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: grocer-http-service
+            port:
+              number: 8080
