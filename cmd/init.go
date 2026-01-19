@@ -6,15 +6,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var grpcCmd = &cobra.Command{
-	Use:   "grpc",
-	Short: "",
+var initCmd = &cobra.Command{
+	Use:   "init",
+	Short: "init project",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("grpc called")
+		fmt.Println("script called")
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(grpcCmd)
+	rootCmd.AddCommand(initCmd)
 }
