@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package esx;
+option go_package = "github.com/soyacen/grocer/pkg/esx;esx";
+
+import "google/protobuf/wrappers.proto";
+
+message Config {
+  map<string, Options> configs = 1;
+}
+
+message Options {
+  repeated string                      addresses = 1; // A list of Elasticsearch nodes to use.
+  optional google.protobuf.StringValue username  = 2; // Username for HTTP Basic Authentication.
+  optional google.protobuf.StringValue password  = 3; // Password for HTTP Basic Authentication.
+
+  optional google.protobuf.StringValue cloud_id                = 4; // Endpoint for the Elastic Service (https://elastic.co/cloud).
+  optional google.protobuf.StringValue api_key                 = 5; // Base64-encoded token for authorization; if set, overrides username/password and service token.
+  optional google.protobuf.StringValue service_token           = 6; // Service token for authorization; if set, overrides username/password.
+  optional google.protobuf.StringValue certificate_fingerprint = 7; // SHA256 hex fingerprint given by Elasticsearch on first launch.
+
+  // Header represents http.Header
+  map<string, string> header = 8; // Global HTTP request header.
+
+  // PEM-encoded certificate authorities.
+  optional google.protobuf.BytesValue ca_cert = 9; // When set, an empty certificate pool will be created, and the certificates will be appended to it.
+                     // The option is only valid when the transport is not specified, or when it's http.Transport.
+
+  repeated int32                      retry_on_status = 10; // List of status codes for retry. Default: 502, 503, 504.
+  optional google.protobuf.BoolValue  disable_retry   = 11; // Default: false.
+  optional google.protobuf.Int32Value max_retries     = 12; // Default: 3.
+  // Note: retry_on_error function is omitted as functions cannot be serialized
+
+  optional google.protobuf.BoolValue  compress_request_body       = 13; // Default: false.
+  optional google.protobuf.Int32Value compress_request_body_level = 14; // Default: gzip.DefaultCompression.
+  optional google.protobuf.BoolValue  pool_compressor             = 15; // If true, a sync.Pool based gzip writer is used. Default: false.
+
+  optional google.protobuf.BoolValue  discover_nodes_on_start = 16; // Discover nodes when initializing the client. Default: false.
+  optional google.protobuf.Int64Value discover_nodes_interval = 17; // Discover nodes periodically in milliseconds. Default: disabled.
+
+  optional google.protobuf.BoolValue enable_metrics            = 18; // Enable the metrics collection.
+  optional google.protobuf.BoolValue enable_debug_logger       = 19; // Enable the debug logging.
+  optional google.protobuf.BoolValue enable_compatibility_mode = 20; // Enable sends compatibility header
+
+  optional google.protobuf.BoolValue disable_meta_header = 21; // Disable the additional "X-Elastic-Client-Meta" HTTP header.
+}

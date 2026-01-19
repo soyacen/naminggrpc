@@ -1,0 +1,15 @@
+syntax = "proto3";
+package nacosx;
+option go_package = "github.com/soyacen/grocer/pkg/nacosx;nacosx";
+
+import "google/protobuf/wrappers.proto";
+
+message Config {
+  map<string, Options> configs = 1;
+}
+
+message Options {
+  google.protobuf.StringValue address   = 1;
+  google.protobuf.Int32Value  port      = 2;
+  google.protobuf.StringValue namespace = 5;
+}

@@ -1,4 +1,4 @@
-module github.com/soyacen/grocer
+module github.com/soyacen/grocer/pkg
 
 go 1.25
 
