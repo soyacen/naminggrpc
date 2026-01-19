@@ -5,6 +5,7 @@ option go_package = "github.com/soyacen/grocer/pkg/jeagerx;jeagerx";
 
 import "google/protobuf/duration.proto";
 import "google/protobuf/wrappers.proto";
+
 import "pkg/protobufx/tls.proto";
 
 message Config {

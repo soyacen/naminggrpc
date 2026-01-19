@@ -2,15 +2,15 @@ package pkg
 
 import (
 	"github.com/google/wire"
-	"github.com/soyacen/grocer/pkg/pkg/dbx"
-	"github.com/soyacen/grocer/pkg/pkg/esx"
-	"github.com/soyacen/grocer/pkg/pkg/goosex"
-	"github.com/soyacen/grocer/pkg/pkg/grpcx"
-	"github.com/soyacen/grocer/pkg/pkg/kafkax"
-	"github.com/soyacen/grocer/pkg/pkg/mongox"
-	"github.com/soyacen/grocer/pkg/pkg/nacosx"
-	"github.com/soyacen/grocer/pkg/pkg/redisx"
-	"github.com/soyacen/grocer/pkg/pkg/registryx"
+	"github.com/soyacen/grocer/pkg/dbx"
+	"github.com/soyacen/grocer/pkg/esx"
+	"github.com/soyacen/grocer/pkg/goosex"
+	"github.com/soyacen/grocer/pkg/grpcx"
+	"github.com/soyacen/grocer/pkg/kafkax"
+	"github.com/soyacen/grocer/pkg/mongox"
+	"github.com/soyacen/grocer/pkg/nacosx"
+	"github.com/soyacen/grocer/pkg/redisx"
+	"github.com/soyacen/grocer/pkg/registryx"
 )
 
 var Provider = wire.NewSet(

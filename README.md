@@ -59,7 +59,7 @@ Redis 缓存集成，支持单机、集群和哨兵模式。
 ### 安装
 
 ```bash
-go get github.com/soyacen/grocer/pkg
+go get github.com/soyacen/grocer
 ```
 
 ### 使用示例
@@ -68,8 +68,8 @@ go get github.com/soyacen/grocer/pkg
 package main
 
 import (
-    "github.com/soyacen/grocer/pkg/redisx"
-    "github.com/soyacen/grocer/pkg/dbx"
+    "github.com/soyacen/grocer/redisx"
+    "github.com/soyacen/grocer/dbx"
 )
 
 func main() {
