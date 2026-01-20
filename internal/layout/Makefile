@@ -4,7 +4,7 @@
 PROJECT_NAME ?= project
 
 # Image registry username variable - customize as needed
-IMAGE_REGISTRY_USERNAME ?= username
+IMAGE_REGISTRY_USERNAME ?= $(shell echo $${IMAGE_REGISTRY_USERNAME:-username})
 
 # Get the latest git tag as version, fallback to 'latest' if not tagged
 GIT_TAG := $(shell git describe --tags --abbrev=0 2>/dev/null || echo "latest")

@@ -14,7 +14,7 @@ RUN go mod download
 COPY . .
 
 # 构建应用
-RUN CGO_ENABLED=0 GOOS=linux go build -o project .
+RUN CGO_ENABLED=0 GOOS=linux go build -o app .
 
 # 使用轻量级alpine镜像作为最终镜像
 FROM alpine:latest
@@ -33,7 +33,7 @@ RUN addgroup -g 65532 nonroot &&\
 WORKDIR /root/
 
 # 从builder镜像中复制编译好的二进制文件
-COPY --from=builder /app/project .
+COPY --from=builder /app/app .
 
 # 更改文件权限给nonroot用户
 RUN chown -R nonroot:nonroot /root/
@@ -43,4 +43,4 @@ USER nonroot
 # EXPOSE 8080
 
 # 启动应用
-CMD ["./project"]
+CMD ["./app"]

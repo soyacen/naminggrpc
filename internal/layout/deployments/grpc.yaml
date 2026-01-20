@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: grocer-grpc
-        image: soyacen/grocer:latest  # 替换为实际的镜像名称
+        image: soyacen/layout:latest  # 替换为实际的镜像名称
         command: ["./project"]
         args: ["grpc"]  # 启动 gRPC 服务
         ports:

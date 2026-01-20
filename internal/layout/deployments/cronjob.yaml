@@ -16,7 +16,7 @@ spec:
         spec:
           containers:
           - name: grocer-cronjob
-            image: soyacen/grocer:latest  # 替换为实际的镜像名称
+            image: soyacen/layout:latest  # 替换为实际的镜像名称
             command:
             - /bin/sh
             - -c

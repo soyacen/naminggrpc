@@ -128,7 +128,7 @@ func setTracerProvider(ctx context.Context, o *Config, exporter sdktrace.SpanExp
 	var bcOpts []sdktrace.BatchSpanProcessorOption
 	tpOpts := []sdktrace.TracerProviderOption{
 		sdktrace.WithBatcher(exporter, bcOpts...),
-		sdktrace.WithResource(otelx.NewResource(ctx)),
+		sdktrace.WithResource(otelx.NewShortResource()),
 		sdktrace.WithSampler(newSampler(o.GetSamplingRate().GetValue())),
 	}
 	tracerProvider := sdktrace.NewTracerProvider(tpOpts...)

@@ -50,6 +50,10 @@ func ServiceAttributes() []attribute.KeyValue {
 	return attrs
 }
 
+func NewShortResource() *resource.Resource {
+	return resource.Default()
+}
+
 func NewResource(ctx context.Context) *resource.Resource {
 	opts := []resource.Option{
 		resource.WithAttributes(append(slices.Clone(Attributes), ServiceAttributes()...)...),

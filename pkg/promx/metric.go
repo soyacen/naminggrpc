@@ -17,7 +17,7 @@ func SetPrometheusMeterProvider(ctx context.Context) {
 		panic(err)
 	}
 	meterProvider := sdkmetric.NewMeterProvider(
-		sdkmetric.WithResource(otelx.NewResource(ctx)),
+		sdkmetric.WithResource(otelx.NewShortResource()),
 		sdkmetric.WithReader(exporter),
 	)
 	otel.SetMeterProvider(meterProvider)
