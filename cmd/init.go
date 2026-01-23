@@ -26,27 +26,23 @@ import (
 var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "init project",
-	Long:  ``,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return run()
-	},
+	RunE:  initRun,
 }
 
 var dstMod *string
 
-var dir *string
+var initProjectDir *string
 
 func init() {
 	rootCmd.AddCommand(initCmd)
 	dstMod = initCmd.Flags().StringP("mod", "m", "", "go module name")
 	_ = initCmd.MarkFlagRequired("mod")
-	dir = initCmd.Flags().StringP("dir", "d", "", "target directory")
+	initProjectDir = initCmd.Flags().StringP("dir", "d", "", "project directory, default is current directory")
 }
 
-func run() error {
+func initRun(_ *cobra.Command, _ []string) error {
 	srcMod := "github.com/soyacen/grocer/internal/layout"
-	srcModVers := srcMod
-	srcModVers += "@latest"
+	srcModVers := srcMod + "@latest"
 	srcMod, _, _ = strings.Cut(srcMod, "@")
 	if err := module.CheckPath(srcMod); err != nil {
 		return errors.Wrap(err, "invalid source module name")
@@ -56,27 +52,26 @@ func run() error {
 		return errors.Wrap(err, "invalid destination module name")
 	}
 
-	if *dir == "" {
-		s := "." + string(filepath.Separator) + path.Base(*dstMod)
-		absDir, err := filepath.Abs(s)
+	if *initProjectDir == "" {
+		absDir, err := filepath.Abs("." + string(filepath.Separator) + path.Base(*dstMod))
 		if err != nil {
 			return errors.Wrap(err, "failed to get absolute path for target directory")
 		}
-		dir = &absDir
+		*initProjectDir = absDir
 	} else {
-		absDir, err := filepath.Abs(*dir)
+		absDir, err := filepath.Abs(*initProjectDir)
 		if err != nil {
 			return errors.Wrap(err, "failed to get absolute path for target directory")
 		}
-		*dir = absDir
+		*initProjectDir = absDir
 	}
 
 	fmt.Println("dstMod: ", *dstMod)
 
-	fmt.Println("dir: ", *dir)
+	fmt.Println("dir: ", *initProjectDir)
 
 	// Dir must not exist or must be an empty directory.
-	de, err := os.ReadDir(*dir)
+	de, err := os.ReadDir(*initProjectDir)
 	if err == nil && len(de) > 0 {
 		return errors.Wrap(err, "target directory exists and is non-empty")
 	}
@@ -98,8 +93,8 @@ func run() error {
 	}
 
 	if needMkdir {
-		if err := os.MkdirAll(*dir, 0o777); err != nil {
-			return errors.Wrap(err, "failed to mkdir "+*dir)
+		if err := os.MkdirAll(*initProjectDir, 0o777); err != nil {
+			return errors.Wrap(err, "failed to mkdir "+*initProjectDir)
 		}
 	}
 
@@ -125,7 +120,7 @@ func run() error {
 			}
 		}
 
-		dst := filepath.Join(*dir, rel)
+		dst := filepath.Join(*initProjectDir, rel)
 		if d.IsDir() {
 			if err := os.MkdirAll(dst, 0o777); err != nil {
 				return errors.WithStack(err)
@@ -140,18 +135,16 @@ func run() error {
 
 		switch rel {
 		case "cmd/root.go":
-			data = fixRootGo(data, *dir)
+			data = fixCmdRootGo(data, *initProjectDir)
 		case "go.mod":
 			data = fixGoMod(data, *dstMod)
 		case "Makefile":
-			data = fixMakefile(data, *dir)
-		default:
-			isRoot := !strings.Contains(rel, string(filepath.Separator))
-			if strings.HasSuffix(rel, ".go") {
-				data = fixGo(data, rel, srcMod, *dstMod, isRoot)
-			}
+			data = fixMakefile(data, *initProjectDir)
 		}
-
+		isRoot := !strings.Contains(rel, string(filepath.Separator))
+		if strings.HasSuffix(rel, ".go") {
+			data = fixGo(data, rel, srcMod, *dstMod, isRoot)
+		}
 		if err := os.WriteFile(dst, data, 0o666); err != nil {
 			return errors.WithStack(err)
 		}
@@ -160,7 +153,7 @@ func run() error {
 		return err
 	}
 
-	log.Printf("initialized %s in %s", *dstMod, *dir)
+	log.Printf("initialized %s in %s", *dstMod, *initProjectDir)
 	return nil
 }
 
@@ -168,7 +161,7 @@ func fixMakefile(data []byte, dir string) []byte {
 	return bytes.ReplaceAll(data, []byte("grocer"), []byte(path.Base(dir)))
 }
 
-func fixRootGo(data []byte, dir string) []byte {
+func fixCmdRootGo(data []byte, dir string) []byte {
 	fset := token.NewFileSet()
 	f, err := parser.ParseFile(fset, "cmd/root.go", data, parser.ParseComments)
 	if err != nil {

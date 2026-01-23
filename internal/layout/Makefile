@@ -1,7 +1,7 @@
 # Makefile for grocer project
 
 # Project name variable - customize as needed
-PROJECT_NAME ?= $(shell echo $${PROJECT_NAME:-layout})
+PROJECT_NAME ?= $(shell echo $${PROJECT_NAME:-grocer})
 
 # Image registry username variable - customize as needed
 IMAGE_REGISTRY_USERNAME ?= $(shell echo $${IMAGE_REGISTRY_USERNAME:-username})
