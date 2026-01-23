@@ -11,7 +11,6 @@ import (
 type nacosOptions struct {
 	ClusterName string
 	Weight      float64
-	Namespace   string
 	GroupName   string
 	Metadata    map[string]string
 }
@@ -30,12 +29,6 @@ func Weight(weight float64) NacosOption {
 	}
 }
 
-func NameSpace(nameSpace string) NacosOption {
-	return func(r *nacosOptions) {
-		r.Namespace = nameSpace
-	}
-}
-
 func GroupName(name string) NacosOption {
 	return func(r *nacosOptions) {
 		r.GroupName = name
@@ -46,7 +39,7 @@ func groupName(o *nacosOptions) string {
 	return o.GroupName
 }
 
-type Registrar struct {
+type nacosRegistrar struct {
 	ServiceName  string
 	IP           string
 	Port         int
@@ -54,7 +47,7 @@ type Registrar struct {
 	nacosOptions *nacosOptions
 }
 
-func (r *Registrar) Register(ctx context.Context) error {
+func (r *nacosRegistrar) Register(ctx context.Context) error {
 	param := vo.RegisterInstanceParam{
 		ServiceName: r.ServiceName,
 		Ip:          r.IP,           // 服务实例IP
@@ -77,7 +70,7 @@ func (r *Registrar) Register(ctx context.Context) error {
 	return nil
 }
 
-func (r *Registrar) Deregister(ctx context.Context) error {
+func (r *nacosRegistrar) Deregister(ctx context.Context) error {
 	param := vo.DeregisterInstanceParam{
 		Ip:          r.IP,           // 服务实例IP
 		Port:        uint64(r.Port), // 服务实例port
@@ -96,8 +89,8 @@ func (r *Registrar) Deregister(ctx context.Context) error {
 	return nil
 }
 
-func NewRegistrar(namingClient naming_client.INamingClient, serviceName string, port int, opts ...NacosOption) (*Registrar, error) {
-	r := &Registrar{
+func NewNacosRegistrar(namingClient naming_client.INamingClient, serviceName string, port int, opts ...NacosOption) (Registrar, error) {
+	r := &nacosRegistrar{
 		ServiceName:  serviceName,
 		IP:           "",
 		Port:         port,

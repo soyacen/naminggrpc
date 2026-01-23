@@ -152,61 +152,93 @@ func createNacosClient(t *nacosResolverTarget) (naming_client.INamingClient, err
 }
 
 func watchNacosService(ctx context.Context, client naming_client.INamingClient, t *nacosResolverTarget, output chan<- []model.Instance) {
-	res := make(chan []model.Instance)
-	quit := make(chan struct{})
+	res := make(chan []model.Instance, 1)
+	// Subscribe to service updates
+	subscribeParam := &vo.SubscribeParam{
+		ServiceName: t.Service,
+		GroupName:   t.GroupName,
+		Clusters:    []string{t.ClusterName},
+		SubscribeCallback: func(services []model.Instance, err error) {
+			if err != nil {
+				grpclog.Errorf("[Nacos resolver] Error in subscription callback for service=%s; error=%v", t.Service, err)
+				return
+			}
+			grpclog.Infof("[Nacos resolver] %d endpoints received for service=%s", len(services), t.Service)
+			select {
+			case res <- services:
+			case <-ctx.Done():
+				return
+			}
+		},
+	}
+
+	// Start subscription in a goroutine
 	go func() {
+		if err := client.Subscribe(subscribeParam); err != nil {
+			grpclog.Errorf("[Nacos resolver] Couldn't subscribe to service=%s; error=%v", t.Service, err)
+		}
+	}()
+
+	// Handle unsubscribe when context is cancelled
+	go func() {
+		<-ctx.Done()
+		if err := client.Unsubscribe(subscribeParam); err != nil {
+			grpclog.Errorf("[Nacos resolver] Couldn't unsubscribe to service=%s; error=%v", t.Service, err)
+		}
+	}()
+
+	// Polling loop for fetching instances periodically
+	go func() {
+		// Create polling ticker
 		ticker := time.NewTicker(t.PollInterval)
 		defer ticker.Stop()
 		for {
 			select {
 			case <-ticker.C:
-			case <-quit:
-				return
-			}
-			instances, err := client.SelectInstances(vo.SelectInstancesParam{
-				ServiceName: t.Service,
-				GroupName:   t.GroupName,
-				Clusters:    []string{t.ClusterName},
-				HealthyOnly: true,
-			})
-			if err != nil {
-				grpclog.Errorf("[Nacos resolver] Couldn't fetch endpoints. service=%s; error=%v", t.Service, err)
-				continue
-			}
-			grpclog.Infof("[Nacos resolver] %d endpoints fetched for service=%s", len(instances), t.Service)
-			select {
-			case res <- instances:
-			case <-quit:
+				instances, err := client.SelectInstances(vo.SelectInstancesParam{
+					ServiceName: t.Service,
+					GroupName:   t.GroupName,
+					Clusters:    []string{t.ClusterName},
+					HealthyOnly: true,
+				})
+				if err != nil {
+					grpclog.Errorf("[Nacos resolver] Couldn't fetch endpoints. service=%s; error=%v", t.Service, err)
+					continue
+				}
+				grpclog.Infof("[Nacos resolver] %d endpoints fetched for service=%s", len(instances), t.Service)
+
+				select {
+				case output <- instances:
+				case <-ctx.Done():
+					return
+				}
+			case <-ctx.Done():
 				return
 			}
 		}
 	}()
-
-	for {
-		if ctx.Err() != nil {
-			close(quit)
-			return
-		}
-
-		select {
-		case ee := <-res:
-			output <- ee
-		case <-ctx.Done():
-			close(quit)
-			return
-		}
-	}
 }
 
 func populateEndpoints(ctx context.Context, clientConn resolver.ClientConn, input <-chan []model.Instance) {
 	for {
 		select {
-		case instances := <-input:
+		case instances, ok := <-input:
+			if !ok {
+				// Channel was closed, exit the loop
+				grpclog.Info("[Nacos resolver] Input channel closed, ending population")
+				return
+			}
+
 			instanceSet := make(map[string]model.Instance, len(instances))
 			for _, instance := range instances {
+				// Filter out unhealthy or disabled instances
+				if !instance.Enable || !instance.Healthy || instance.Weight <= 0 {
+					continue
+				}
 				addr := fmt.Sprintf("%s:%d", instance.Ip, instance.Port)
 				instanceSet[addr] = instance
 			}
+
 			addresses := make([]resolver.Address, 0, len(instanceSet))
 			for addr, instance := range instanceSet {
 				address := resolver.Address{
@@ -220,11 +252,15 @@ func populateEndpoints(ctx context.Context, clientConn resolver.ClientConn, inpu
 				}
 				addresses = append(addresses, address)
 			}
-			slices.SortFunc[[]resolver.Address](addresses, func(a, b resolver.Address) int { return strings.Compare(a.Addr, b.Addr) })
+
+			slices.SortFunc(addresses, func(a, b resolver.Address) int { return strings.Compare(a.Addr, b.Addr) })
+
 			if err := clientConn.UpdateState(resolver.State{Addresses: addresses}); err != nil {
 				grpclog.Errorf("[Nacos resolver] Couldn't update client connection. error=%v", err)
 				continue
 			}
+
+			grpclog.Infof("[Nacos resolver] Updated state with %d healthy endpoints", len(addresses))
 		case <-ctx.Done():
 			grpclog.Info("[Nacos resolver] Watch has been finished")
 			return

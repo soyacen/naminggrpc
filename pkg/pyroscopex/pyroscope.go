@@ -31,14 +31,14 @@ func Start(config *Config) {
 		var err error
 		// Initialize the pyroscope profiler with provided configuration
 		profiler, err = pyroscope.Start(pyroscope.Config{
-			ApplicationName:   config.GetAppName().GetValue(),       // Application name to identify the service in pyroscope UI
-			Tags:              config.GetTags(),                     // Tags to attach to the profiling data
-			ServerAddress:     config.GetServerAddr().GetValue(),    // Address of the pyroscope server
-			BasicAuthUser:     config.GetBasicAuthUser().GetValue(), // HTTP basic auth username
+			ApplicationName:   config.GetAppName().GetValue(),           // Application name to identify the service in pyroscope UI
+			Tags:              config.GetTags(),                         // Tags to attach to the profiling data
+			ServerAddress:     config.GetServerAddr().GetValue(),        // Address of the pyroscope server
+			BasicAuthUser:     config.GetBasicAuthUser().GetValue(),     // HTTP basic auth username
 			BasicAuthPassword: config.GetBasicAuthPassword().GetValue(), // HTTP basic auth password
-			TenantID:          config.GetTenantId().GetValue(),      // Tenant ID for multi-tenant setups
-			UploadRate:        config.GetUploadRate().AsDuration(),  // How often to upload profiling data
-			Logger:            pyroscope.StandardLogger,             // Use standard logger for pyroscope logs
+			TenantID:          config.GetTenantId().GetValue(),          // Tenant ID for multi-tenant setups
+			UploadRate:        config.GetUploadRate().AsDuration(),      // How often to upload profiling data
+			Logger:            pyroscope.StandardLogger,                 // Use standard logger for pyroscope logs
 			ProfileTypes: []pyroscope.ProfileType{
 				pyroscope.ProfileCPU,           // CPU profiling
 				pyroscope.ProfileAllocObjects,  // Allocated objects profiling

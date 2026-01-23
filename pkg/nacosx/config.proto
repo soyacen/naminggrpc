@@ -4,12 +4,59 @@ option go_package = "github.com/soyacen/grocer/pkg/nacosx;nacosx";
 
 import "google/protobuf/wrappers.proto";
 
+import "pkg/protobufx/tls.proto";
+
 message Config {
   map<string, Options> configs = 1;
 }
 
 message Options {
-  google.protobuf.StringValue address   = 1;
-  google.protobuf.Int32Value  port      = 2;
-  google.protobuf.StringValue namespace = 5;
+  google.protobuf.StringValue scheme       = 1; // the nacos server scheme, default=http
+  google.protobuf.StringValue context_path = 2; // the nacos server contextpath, default=/nacos
+  google.protobuf.StringValue ip_addr      = 3; // the nacos server address
+  google.protobuf.UInt64Value port         = 4; // nacos server port
+  google.protobuf.UInt64Value grpc_port    = 5; // nacos server grpc port, default=server port + 1000
+  google.protobuf.StringValue namespace    = 6; // the namespaceId of Nacos, when namespace is public, use empty string
+
+  google.protobuf.StringValue app_name   = 7; // the appName
+  google.protobuf.StringValue app_key    = 8; // the client identity information
+  google.protobuf.StringValue endpoint   = 9; // the endpoint for get Nacos server addresses
+  google.protobuf.StringValue region_id  = 10; // the regionId for kms
+  google.protobuf.StringValue access_key = 11; // the AccessKey for kms
+  google.protobuf.StringValue secret_key = 12; // the SecretKey for kms
+  google.protobuf.StringValue username   = 13; // the username for nacos auth
+  google.protobuf.StringValue password   = 14; // the password for nacos auth
+
+  google.protobuf.StringValue cache_dir               = 15; // the directory for persist nacos service info, default value is current path
+  google.protobuf.BoolValue   not_load_cache_at_start = 16; // not to load persistent nacos service info in CacheDir at start time
+  google.protobuf.BoolValue   update_cache_when_empty = 17; // update cache when get empty service instance from server
+  google.protobuf.BoolValue   disable_use_snapshot    = 18; // It's a switch, default is false, means that when get remote config fail, use local cache file instead
+  google.protobuf.Int32Value  update_thread_num       = 19; // the number of goroutine for update nacos service info, default value is 20
+  google.protobuf.StringValue log_dir                 = 20; // the directory for log, default is current path
+  google.protobuf.StringValue log_level               = 21; // the level of log, it's must be debug,info,warn,error, default value is info
+  google.protobuf.BoolValue   append_to_stdout        = 22; // if append log to stdout
+  ClientLogSamplingConfig     log_sampling            = 23; // the sampling config of log
+  ClientLogRollingConfig      log_rolling_config      = 24; // log rolling config
+  protobufx.TLSOptions        tls_cfg                 = 25; // tls Config
+  google.protobuf.BoolValue   async_update_service    = 26; // open async update service by query
+  google.protobuf.StringValue endpoint_context_path   = 27; // the address server endpoint contextPath
+  google.protobuf.StringValue endpoint_query_params   = 28; // the address server endpoint query params
+  google.protobuf.StringValue cluster_name            = 29; // the address server clusterName
+  google.protobuf.UInt64Value timeout_ms              = 30; // timeout for requesting Nacos server, default value is 10000ms
+  google.protobuf.Int64Value  beat_interval           = 31; // the time interval for sending beat to server, default value is 5000ms
+  map<string, string>         app_conn_labels         = 32; // app conn labels
+}
+
+message ClientLogSamplingConfig {
+  google.protobuf.Int32Value initial     = 1;
+  google.protobuf.Int32Value there_after = 2;
+}
+
+message ClientLogRollingConfig {
+  google.protobuf.StringValue filename    = 1;
+  google.protobuf.Int32Value  max_size    = 2; // megabytes
+  google.protobuf.Int32Value  max_age     = 3; // days
+  google.protobuf.Int32Value  max_backups = 4; // count
+  google.protobuf.BoolValue   local_time  = 5;
+  google.protobuf.BoolValue   compress    = 6;
 }

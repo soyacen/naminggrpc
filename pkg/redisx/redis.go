@@ -2,8 +2,8 @@ package redisx
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/cockroachdb/errors"
 	"github.com/redis/go-redis/extra/redisotel/v9"
 	"github.com/redis/go-redis/v9"
 	"github.com/soyacen/gox/conc/lazyload"
@@ -65,7 +65,7 @@ func NewClients(ctx context.Context, config *Config) *lazyload.Group[redis.Unive
 		New: func(key string) (redis.UniversalClient, error) {
 			options, ok := config.GetConfigs()[key]
 			if !ok {
-				return nil, fmt.Errorf("redis %s not found", key)
+				return nil, errors.Errorf("redisx: config %s not found", key)
 			}
 			return NewClient(ctx, options)
 		},
@@ -82,20 +82,20 @@ func NewClient(ctx context.Context, options *Options) (redis.UniversalClient, er
 	// Test the connection by pinging the server
 	_, err := client.Ping(ctx).Result()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "redisx: failed to ping redis")
 	}
 
 	// Enable tracing if configured
 	if options.GetEnableTracing().GetValue() {
 		if err := redisotel.InstrumentTracing(client); err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "redisx: failed to instrument tracing")
 		}
 	}
 
 	// Enable metrics if configured
 	if options.GetEnableMetrics().GetValue() {
 		if err := redisotel.InstrumentMetrics(client); err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "redisx: failed to instrument metrics")
 		}
 	}
 

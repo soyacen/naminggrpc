@@ -3,10 +3,7 @@ syntax = "proto3";
 package s3x;
 option go_package = "github.com/soyacen/grocer/pkg/s3x;s3x";
 
-import "google/protobuf/duration.proto";
 import "google/protobuf/wrappers.proto";
-
-import "pkg/protobufx/tls.proto";
 
 message Config {
   map<string, Options> configs = 1;

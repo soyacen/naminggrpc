@@ -7,6 +7,7 @@
 package nacosx
 
 import (
+	protobufx "github.com/soyacen/grocer/pkg/protobufx"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
@@ -67,12 +68,41 @@ func (x *Config) GetConfigs() map[string]*Options {
 }
 
 type Options struct {
-	state         protoimpl.MessageState  `protogen:"open.v1"`
-	Address       *wrapperspb.StringValue `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	Port          *wrapperspb.Int32Value  `protobuf:"bytes,2,opt,name=port,proto3" json:"port,omitempty"`
-	Namespace     *wrapperspb.StringValue `protobuf:"bytes,5,opt,name=namespace,proto3" json:"namespace,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                protoimpl.MessageState   `protogen:"open.v1"`
+	Scheme               *wrapperspb.StringValue  `protobuf:"bytes,1,opt,name=scheme,proto3" json:"scheme,omitempty"`                                                                                                                 // the nacos server scheme, default=http
+	ContextPath          *wrapperspb.StringValue  `protobuf:"bytes,2,opt,name=context_path,json=contextPath,proto3" json:"context_path,omitempty"`                                                                                    // the nacos server contextpath, default=/nacos
+	IpAddr               *wrapperspb.StringValue  `protobuf:"bytes,3,opt,name=ip_addr,json=ipAddr,proto3" json:"ip_addr,omitempty"`                                                                                                   // the nacos server address
+	Port                 *wrapperspb.UInt64Value  `protobuf:"bytes,4,opt,name=port,proto3" json:"port,omitempty"`                                                                                                                     // nacos server port
+	GrpcPort             *wrapperspb.UInt64Value  `protobuf:"bytes,5,opt,name=grpc_port,json=grpcPort,proto3" json:"grpc_port,omitempty"`                                                                                             // nacos server grpc port, default=server port + 1000
+	Namespace            *wrapperspb.StringValue  `protobuf:"bytes,6,opt,name=namespace,proto3" json:"namespace,omitempty"`                                                                                                           // the namespaceId of Nacos, when namespace is public, use empty string
+	AppName              *wrapperspb.StringValue  `protobuf:"bytes,7,opt,name=app_name,json=appName,proto3" json:"app_name,omitempty"`                                                                                                // the appName
+	AppKey               *wrapperspb.StringValue  `protobuf:"bytes,8,opt,name=app_key,json=appKey,proto3" json:"app_key,omitempty"`                                                                                                   // the client identity information
+	Endpoint             *wrapperspb.StringValue  `protobuf:"bytes,9,opt,name=endpoint,proto3" json:"endpoint,omitempty"`                                                                                                             // the endpoint for get Nacos server addresses
+	RegionId             *wrapperspb.StringValue  `protobuf:"bytes,10,opt,name=region_id,json=regionId,proto3" json:"region_id,omitempty"`                                                                                            // the regionId for kms
+	AccessKey            *wrapperspb.StringValue  `protobuf:"bytes,11,opt,name=access_key,json=accessKey,proto3" json:"access_key,omitempty"`                                                                                         // the AccessKey for kms
+	SecretKey            *wrapperspb.StringValue  `protobuf:"bytes,12,opt,name=secret_key,json=secretKey,proto3" json:"secret_key,omitempty"`                                                                                         // the SecretKey for kms
+	Username             *wrapperspb.StringValue  `protobuf:"bytes,13,opt,name=username,proto3" json:"username,omitempty"`                                                                                                            // the username for nacos auth
+	Password             *wrapperspb.StringValue  `protobuf:"bytes,14,opt,name=password,proto3" json:"password,omitempty"`                                                                                                            // the password for nacos auth
+	CacheDir             *wrapperspb.StringValue  `protobuf:"bytes,15,opt,name=cache_dir,json=cacheDir,proto3" json:"cache_dir,omitempty"`                                                                                            // the directory for persist nacos service info, default value is current path
+	NotLoadCacheAtStart  *wrapperspb.BoolValue    `protobuf:"bytes,16,opt,name=not_load_cache_at_start,json=notLoadCacheAtStart,proto3" json:"not_load_cache_at_start,omitempty"`                                                     // not to load persistent nacos service info in CacheDir at start time
+	UpdateCacheWhenEmpty *wrapperspb.BoolValue    `protobuf:"bytes,17,opt,name=update_cache_when_empty,json=updateCacheWhenEmpty,proto3" json:"update_cache_when_empty,omitempty"`                                                    // update cache when get empty service instance from server
+	DisableUseSnapshot   *wrapperspb.BoolValue    `protobuf:"bytes,18,opt,name=disable_use_snapshot,json=disableUseSnapshot,proto3" json:"disable_use_snapshot,omitempty"`                                                            // It's a switch, default is false, means that when get remote config fail, use local cache file instead
+	UpdateThreadNum      *wrapperspb.Int32Value   `protobuf:"bytes,19,opt,name=update_thread_num,json=updateThreadNum,proto3" json:"update_thread_num,omitempty"`                                                                     // the number of goroutine for update nacos service info, default value is 20
+	LogDir               *wrapperspb.StringValue  `protobuf:"bytes,20,opt,name=log_dir,json=logDir,proto3" json:"log_dir,omitempty"`                                                                                                  // the directory for log, default is current path
+	LogLevel             *wrapperspb.StringValue  `protobuf:"bytes,21,opt,name=log_level,json=logLevel,proto3" json:"log_level,omitempty"`                                                                                            // the level of log, it's must be debug,info,warn,error, default value is info
+	AppendToStdout       *wrapperspb.BoolValue    `protobuf:"bytes,22,opt,name=append_to_stdout,json=appendToStdout,proto3" json:"append_to_stdout,omitempty"`                                                                        // if append log to stdout
+	LogSampling          *ClientLogSamplingConfig `protobuf:"bytes,23,opt,name=log_sampling,json=logSampling,proto3" json:"log_sampling,omitempty"`                                                                                   // the sampling config of log
+	LogRollingConfig     *ClientLogRollingConfig  `protobuf:"bytes,24,opt,name=log_rolling_config,json=logRollingConfig,proto3" json:"log_rolling_config,omitempty"`                                                                  // log rolling config
+	TlsCfg               *protobufx.TLSOptions    `protobuf:"bytes,25,opt,name=tls_cfg,json=tlsCfg,proto3" json:"tls_cfg,omitempty"`                                                                                                  // tls Config
+	AsyncUpdateService   *wrapperspb.BoolValue    `protobuf:"bytes,26,opt,name=async_update_service,json=asyncUpdateService,proto3" json:"async_update_service,omitempty"`                                                            // open async update service by query
+	EndpointContextPath  *wrapperspb.StringValue  `protobuf:"bytes,27,opt,name=endpoint_context_path,json=endpointContextPath,proto3" json:"endpoint_context_path,omitempty"`                                                         // the address server endpoint contextPath
+	EndpointQueryParams  *wrapperspb.StringValue  `protobuf:"bytes,28,opt,name=endpoint_query_params,json=endpointQueryParams,proto3" json:"endpoint_query_params,omitempty"`                                                         // the address server endpoint query params
+	ClusterName          *wrapperspb.StringValue  `protobuf:"bytes,29,opt,name=cluster_name,json=clusterName,proto3" json:"cluster_name,omitempty"`                                                                                   // the address server clusterName
+	TimeoutMs            *wrapperspb.UInt64Value  `protobuf:"bytes,30,opt,name=timeout_ms,json=timeoutMs,proto3" json:"timeout_ms,omitempty"`                                                                                         // timeout for requesting Nacos server, default value is 10000ms
+	BeatInterval         *wrapperspb.Int64Value   `protobuf:"bytes,31,opt,name=beat_interval,json=beatInterval,proto3" json:"beat_interval,omitempty"`                                                                                // the time interval for sending beat to server, default value is 5000ms
+	AppConnLabels        map[string]string        `protobuf:"bytes,32,rep,name=app_conn_labels,json=appConnLabels,proto3" json:"app_conn_labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` // app conn labels
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *Options) Reset() {
@@ -105,16 +135,37 @@ func (*Options) Descriptor() ([]byte, []int) {
 	return file_pkg_nacosx_config_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Options) GetAddress() *wrapperspb.StringValue {
+func (x *Options) GetScheme() *wrapperspb.StringValue {
 	if x != nil {
-		return x.Address
+		return x.Scheme
 	}
 	return nil
 }
 
-func (x *Options) GetPort() *wrapperspb.Int32Value {
+func (x *Options) GetContextPath() *wrapperspb.StringValue {
+	if x != nil {
+		return x.ContextPath
+	}
+	return nil
+}
+
+func (x *Options) GetIpAddr() *wrapperspb.StringValue {
+	if x != nil {
+		return x.IpAddr
+	}
+	return nil
+}
+
+func (x *Options) GetPort() *wrapperspb.UInt64Value {
 	if x != nil {
 		return x.Port
+	}
+	return nil
+}
+
+func (x *Options) GetGrpcPort() *wrapperspb.UInt64Value {
+	if x != nil {
+		return x.GrpcPort
 	}
 	return nil
 }
@@ -126,20 +177,387 @@ func (x *Options) GetNamespace() *wrapperspb.StringValue {
 	return nil
 }
 
+func (x *Options) GetAppName() *wrapperspb.StringValue {
+	if x != nil {
+		return x.AppName
+	}
+	return nil
+}
+
+func (x *Options) GetAppKey() *wrapperspb.StringValue {
+	if x != nil {
+		return x.AppKey
+	}
+	return nil
+}
+
+func (x *Options) GetEndpoint() *wrapperspb.StringValue {
+	if x != nil {
+		return x.Endpoint
+	}
+	return nil
+}
+
+func (x *Options) GetRegionId() *wrapperspb.StringValue {
+	if x != nil {
+		return x.RegionId
+	}
+	return nil
+}
+
+func (x *Options) GetAccessKey() *wrapperspb.StringValue {
+	if x != nil {
+		return x.AccessKey
+	}
+	return nil
+}
+
+func (x *Options) GetSecretKey() *wrapperspb.StringValue {
+	if x != nil {
+		return x.SecretKey
+	}
+	return nil
+}
+
+func (x *Options) GetUsername() *wrapperspb.StringValue {
+	if x != nil {
+		return x.Username
+	}
+	return nil
+}
+
+func (x *Options) GetPassword() *wrapperspb.StringValue {
+	if x != nil {
+		return x.Password
+	}
+	return nil
+}
+
+func (x *Options) GetCacheDir() *wrapperspb.StringValue {
+	if x != nil {
+		return x.CacheDir
+	}
+	return nil
+}
+
+func (x *Options) GetNotLoadCacheAtStart() *wrapperspb.BoolValue {
+	if x != nil {
+		return x.NotLoadCacheAtStart
+	}
+	return nil
+}
+
+func (x *Options) GetUpdateCacheWhenEmpty() *wrapperspb.BoolValue {
+	if x != nil {
+		return x.UpdateCacheWhenEmpty
+	}
+	return nil
+}
+
+func (x *Options) GetDisableUseSnapshot() *wrapperspb.BoolValue {
+	if x != nil {
+		return x.DisableUseSnapshot
+	}
+	return nil
+}
+
+func (x *Options) GetUpdateThreadNum() *wrapperspb.Int32Value {
+	if x != nil {
+		return x.UpdateThreadNum
+	}
+	return nil
+}
+
+func (x *Options) GetLogDir() *wrapperspb.StringValue {
+	if x != nil {
+		return x.LogDir
+	}
+	return nil
+}
+
+func (x *Options) GetLogLevel() *wrapperspb.StringValue {
+	if x != nil {
+		return x.LogLevel
+	}
+	return nil
+}
+
+func (x *Options) GetAppendToStdout() *wrapperspb.BoolValue {
+	if x != nil {
+		return x.AppendToStdout
+	}
+	return nil
+}
+
+func (x *Options) GetLogSampling() *ClientLogSamplingConfig {
+	if x != nil {
+		return x.LogSampling
+	}
+	return nil
+}
+
+func (x *Options) GetLogRollingConfig() *ClientLogRollingConfig {
+	if x != nil {
+		return x.LogRollingConfig
+	}
+	return nil
+}
+
+func (x *Options) GetTlsCfg() *protobufx.TLSOptions {
+	if x != nil {
+		return x.TlsCfg
+	}
+	return nil
+}
+
+func (x *Options) GetAsyncUpdateService() *wrapperspb.BoolValue {
+	if x != nil {
+		return x.AsyncUpdateService
+	}
+	return nil
+}
+
+func (x *Options) GetEndpointContextPath() *wrapperspb.StringValue {
+	if x != nil {
+		return x.EndpointContextPath
+	}
+	return nil
+}
+
+func (x *Options) GetEndpointQueryParams() *wrapperspb.StringValue {
+	if x != nil {
+		return x.EndpointQueryParams
+	}
+	return nil
+}
+
+func (x *Options) GetClusterName() *wrapperspb.StringValue {
+	if x != nil {
+		return x.ClusterName
+	}
+	return nil
+}
+
+func (x *Options) GetTimeoutMs() *wrapperspb.UInt64Value {
+	if x != nil {
+		return x.TimeoutMs
+	}
+	return nil
+}
+
+func (x *Options) GetBeatInterval() *wrapperspb.Int64Value {
+	if x != nil {
+		return x.BeatInterval
+	}
+	return nil
+}
+
+func (x *Options) GetAppConnLabels() map[string]string {
+	if x != nil {
+		return x.AppConnLabels
+	}
+	return nil
+}
+
+type ClientLogSamplingConfig struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Initial       *wrapperspb.Int32Value `protobuf:"bytes,1,opt,name=initial,proto3" json:"initial,omitempty"`
+	ThereAfter    *wrapperspb.Int32Value `protobuf:"bytes,2,opt,name=there_after,json=thereAfter,proto3" json:"there_after,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ClientLogSamplingConfig) Reset() {
+	*x = ClientLogSamplingConfig{}
+	mi := &file_pkg_nacosx_config_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ClientLogSamplingConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ClientLogSamplingConfig) ProtoMessage() {}
+
+func (x *ClientLogSamplingConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_nacosx_config_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ClientLogSamplingConfig.ProtoReflect.Descriptor instead.
+func (*ClientLogSamplingConfig) Descriptor() ([]byte, []int) {
+	return file_pkg_nacosx_config_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ClientLogSamplingConfig) GetInitial() *wrapperspb.Int32Value {
+	if x != nil {
+		return x.Initial
+	}
+	return nil
+}
+
+func (x *ClientLogSamplingConfig) GetThereAfter() *wrapperspb.Int32Value {
+	if x != nil {
+		return x.ThereAfter
+	}
+	return nil
+}
+
+type ClientLogRollingConfig struct {
+	state         protoimpl.MessageState  `protogen:"open.v1"`
+	Filename      *wrapperspb.StringValue `protobuf:"bytes,1,opt,name=filename,proto3" json:"filename,omitempty"`
+	MaxSize       *wrapperspb.Int32Value  `protobuf:"bytes,2,opt,name=max_size,json=maxSize,proto3" json:"max_size,omitempty"`          // megabytes
+	MaxAge        *wrapperspb.Int32Value  `protobuf:"bytes,3,opt,name=max_age,json=maxAge,proto3" json:"max_age,omitempty"`             // days
+	MaxBackups    *wrapperspb.Int32Value  `protobuf:"bytes,4,opt,name=max_backups,json=maxBackups,proto3" json:"max_backups,omitempty"` // count
+	LocalTime     *wrapperspb.BoolValue   `protobuf:"bytes,5,opt,name=local_time,json=localTime,proto3" json:"local_time,omitempty"`
+	Compress      *wrapperspb.BoolValue   `protobuf:"bytes,6,opt,name=compress,proto3" json:"compress,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ClientLogRollingConfig) Reset() {
+	*x = ClientLogRollingConfig{}
+	mi := &file_pkg_nacosx_config_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ClientLogRollingConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ClientLogRollingConfig) ProtoMessage() {}
+
+func (x *ClientLogRollingConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_nacosx_config_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ClientLogRollingConfig.ProtoReflect.Descriptor instead.
+func (*ClientLogRollingConfig) Descriptor() ([]byte, []int) {
+	return file_pkg_nacosx_config_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ClientLogRollingConfig) GetFilename() *wrapperspb.StringValue {
+	if x != nil {
+		return x.Filename
+	}
+	return nil
+}
+
+func (x *ClientLogRollingConfig) GetMaxSize() *wrapperspb.Int32Value {
+	if x != nil {
+		return x.MaxSize
+	}
+	return nil
+}
+
+func (x *ClientLogRollingConfig) GetMaxAge() *wrapperspb.Int32Value {
+	if x != nil {
+		return x.MaxAge
+	}
+	return nil
+}
+
+func (x *ClientLogRollingConfig) GetMaxBackups() *wrapperspb.Int32Value {
+	if x != nil {
+		return x.MaxBackups
+	}
+	return nil
+}
+
+func (x *ClientLogRollingConfig) GetLocalTime() *wrapperspb.BoolValue {
+	if x != nil {
+		return x.LocalTime
+	}
+	return nil
+}
+
+func (x *ClientLogRollingConfig) GetCompress() *wrapperspb.BoolValue {
+	if x != nil {
+		return x.Compress
+	}
+	return nil
+}
+
 var File_pkg_nacosx_config_proto protoreflect.FileDescriptor
 
 const file_pkg_nacosx_config_proto_rawDesc = "" +
 	"\n" +
-	"\x17pkg/nacosx/config.proto\x12\x06nacosx\x1a\x1egoogle/protobuf/wrappers.proto\"\x8c\x01\n" +
+	"\x17pkg/nacosx/config.proto\x12\x06nacosx\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x17pkg/protobufx/tls.proto\"\x8c\x01\n" +
 	"\x06Config\x125\n" +
 	"\aconfigs\x18\x01 \x03(\v2\x1b.nacosx.Config.ConfigsEntryR\aconfigs\x1aK\n" +
 	"\fConfigsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12%\n" +
-	"\x05value\x18\x02 \x01(\v2\x0f.nacosx.OptionsR\x05value:\x028\x01\"\xae\x01\n" +
-	"\aOptions\x126\n" +
-	"\aaddress\x18\x01 \x01(\v2\x1c.google.protobuf.StringValueR\aaddress\x12/\n" +
-	"\x04port\x18\x02 \x01(\v2\x1b.google.protobuf.Int32ValueR\x04port\x12:\n" +
-	"\tnamespace\x18\x05 \x01(\v2\x1c.google.protobuf.StringValueR\tnamespaceB-Z+github.com/soyacen/grocer/pkg/nacosx;nacosxb\x06proto3"
+	"\x05value\x18\x02 \x01(\v2\x0f.nacosx.OptionsR\x05value:\x028\x01\"\xe4\x10\n" +
+	"\aOptions\x124\n" +
+	"\x06scheme\x18\x01 \x01(\v2\x1c.google.protobuf.StringValueR\x06scheme\x12?\n" +
+	"\fcontext_path\x18\x02 \x01(\v2\x1c.google.protobuf.StringValueR\vcontextPath\x125\n" +
+	"\aip_addr\x18\x03 \x01(\v2\x1c.google.protobuf.StringValueR\x06ipAddr\x120\n" +
+	"\x04port\x18\x04 \x01(\v2\x1c.google.protobuf.UInt64ValueR\x04port\x129\n" +
+	"\tgrpc_port\x18\x05 \x01(\v2\x1c.google.protobuf.UInt64ValueR\bgrpcPort\x12:\n" +
+	"\tnamespace\x18\x06 \x01(\v2\x1c.google.protobuf.StringValueR\tnamespace\x127\n" +
+	"\bapp_name\x18\a \x01(\v2\x1c.google.protobuf.StringValueR\aappName\x125\n" +
+	"\aapp_key\x18\b \x01(\v2\x1c.google.protobuf.StringValueR\x06appKey\x128\n" +
+	"\bendpoint\x18\t \x01(\v2\x1c.google.protobuf.StringValueR\bendpoint\x129\n" +
+	"\tregion_id\x18\n" +
+	" \x01(\v2\x1c.google.protobuf.StringValueR\bregionId\x12;\n" +
+	"\n" +
+	"access_key\x18\v \x01(\v2\x1c.google.protobuf.StringValueR\taccessKey\x12;\n" +
+	"\n" +
+	"secret_key\x18\f \x01(\v2\x1c.google.protobuf.StringValueR\tsecretKey\x128\n" +
+	"\busername\x18\r \x01(\v2\x1c.google.protobuf.StringValueR\busername\x128\n" +
+	"\bpassword\x18\x0e \x01(\v2\x1c.google.protobuf.StringValueR\bpassword\x129\n" +
+	"\tcache_dir\x18\x0f \x01(\v2\x1c.google.protobuf.StringValueR\bcacheDir\x12P\n" +
+	"\x17not_load_cache_at_start\x18\x10 \x01(\v2\x1a.google.protobuf.BoolValueR\x13notLoadCacheAtStart\x12Q\n" +
+	"\x17update_cache_when_empty\x18\x11 \x01(\v2\x1a.google.protobuf.BoolValueR\x14updateCacheWhenEmpty\x12L\n" +
+	"\x14disable_use_snapshot\x18\x12 \x01(\v2\x1a.google.protobuf.BoolValueR\x12disableUseSnapshot\x12G\n" +
+	"\x11update_thread_num\x18\x13 \x01(\v2\x1b.google.protobuf.Int32ValueR\x0fupdateThreadNum\x125\n" +
+	"\alog_dir\x18\x14 \x01(\v2\x1c.google.protobuf.StringValueR\x06logDir\x129\n" +
+	"\tlog_level\x18\x15 \x01(\v2\x1c.google.protobuf.StringValueR\blogLevel\x12D\n" +
+	"\x10append_to_stdout\x18\x16 \x01(\v2\x1a.google.protobuf.BoolValueR\x0eappendToStdout\x12B\n" +
+	"\flog_sampling\x18\x17 \x01(\v2\x1f.nacosx.ClientLogSamplingConfigR\vlogSampling\x12L\n" +
+	"\x12log_rolling_config\x18\x18 \x01(\v2\x1e.nacosx.ClientLogRollingConfigR\x10logRollingConfig\x12.\n" +
+	"\atls_cfg\x18\x19 \x01(\v2\x15.protobufx.TLSOptionsR\x06tlsCfg\x12L\n" +
+	"\x14async_update_service\x18\x1a \x01(\v2\x1a.google.protobuf.BoolValueR\x12asyncUpdateService\x12P\n" +
+	"\x15endpoint_context_path\x18\x1b \x01(\v2\x1c.google.protobuf.StringValueR\x13endpointContextPath\x12P\n" +
+	"\x15endpoint_query_params\x18\x1c \x01(\v2\x1c.google.protobuf.StringValueR\x13endpointQueryParams\x12?\n" +
+	"\fcluster_name\x18\x1d \x01(\v2\x1c.google.protobuf.StringValueR\vclusterName\x12;\n" +
+	"\n" +
+	"timeout_ms\x18\x1e \x01(\v2\x1c.google.protobuf.UInt64ValueR\ttimeoutMs\x12@\n" +
+	"\rbeat_interval\x18\x1f \x01(\v2\x1b.google.protobuf.Int64ValueR\fbeatInterval\x12J\n" +
+	"\x0fapp_conn_labels\x18  \x03(\v2\".nacosx.Options.AppConnLabelsEntryR\rappConnLabels\x1a@\n" +
+	"\x12AppConnLabelsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x8e\x01\n" +
+	"\x17ClientLogSamplingConfig\x125\n" +
+	"\ainitial\x18\x01 \x01(\v2\x1b.google.protobuf.Int32ValueR\ainitial\x12<\n" +
+	"\vthere_after\x18\x02 \x01(\v2\x1b.google.protobuf.Int32ValueR\n" +
+	"thereAfter\"\xf1\x02\n" +
+	"\x16ClientLogRollingConfig\x128\n" +
+	"\bfilename\x18\x01 \x01(\v2\x1c.google.protobuf.StringValueR\bfilename\x126\n" +
+	"\bmax_size\x18\x02 \x01(\v2\x1b.google.protobuf.Int32ValueR\amaxSize\x124\n" +
+	"\amax_age\x18\x03 \x01(\v2\x1b.google.protobuf.Int32ValueR\x06maxAge\x12<\n" +
+	"\vmax_backups\x18\x04 \x01(\v2\x1b.google.protobuf.Int32ValueR\n" +
+	"maxBackups\x129\n" +
+	"\n" +
+	"local_time\x18\x05 \x01(\v2\x1a.google.protobuf.BoolValueR\tlocalTime\x126\n" +
+	"\bcompress\x18\x06 \x01(\v2\x1a.google.protobuf.BoolValueR\bcompressB-Z+github.com/soyacen/grocer/pkg/nacosx;nacosxb\x06proto3"
 
 var (
 	file_pkg_nacosx_config_proto_rawDescOnce sync.Once
@@ -153,25 +571,69 @@ func file_pkg_nacosx_config_proto_rawDescGZIP() []byte {
 	return file_pkg_nacosx_config_proto_rawDescData
 }
 
-var file_pkg_nacosx_config_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_pkg_nacosx_config_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_pkg_nacosx_config_proto_goTypes = []any{
-	(*Config)(nil),                 // 0: nacosx.Config
-	(*Options)(nil),                // 1: nacosx.Options
-	nil,                            // 2: nacosx.Config.ConfigsEntry
-	(*wrapperspb.StringValue)(nil), // 3: google.protobuf.StringValue
-	(*wrapperspb.Int32Value)(nil),  // 4: google.protobuf.Int32Value
+	(*Config)(nil),                  // 0: nacosx.Config
+	(*Options)(nil),                 // 1: nacosx.Options
+	(*ClientLogSamplingConfig)(nil), // 2: nacosx.ClientLogSamplingConfig
+	(*ClientLogRollingConfig)(nil),  // 3: nacosx.ClientLogRollingConfig
+	nil,                             // 4: nacosx.Config.ConfigsEntry
+	nil,                             // 5: nacosx.Options.AppConnLabelsEntry
+	(*wrapperspb.StringValue)(nil),  // 6: google.protobuf.StringValue
+	(*wrapperspb.UInt64Value)(nil),  // 7: google.protobuf.UInt64Value
+	(*wrapperspb.BoolValue)(nil),    // 8: google.protobuf.BoolValue
+	(*wrapperspb.Int32Value)(nil),   // 9: google.protobuf.Int32Value
+	(*protobufx.TLSOptions)(nil),    // 10: protobufx.TLSOptions
+	(*wrapperspb.Int64Value)(nil),   // 11: google.protobuf.Int64Value
 }
 var file_pkg_nacosx_config_proto_depIdxs = []int32{
-	2, // 0: nacosx.Config.configs:type_name -> nacosx.Config.ConfigsEntry
-	3, // 1: nacosx.Options.address:type_name -> google.protobuf.StringValue
-	4, // 2: nacosx.Options.port:type_name -> google.protobuf.Int32Value
-	3, // 3: nacosx.Options.namespace:type_name -> google.protobuf.StringValue
-	1, // 4: nacosx.Config.ConfigsEntry.value:type_name -> nacosx.Options
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	4,  // 0: nacosx.Config.configs:type_name -> nacosx.Config.ConfigsEntry
+	6,  // 1: nacosx.Options.scheme:type_name -> google.protobuf.StringValue
+	6,  // 2: nacosx.Options.context_path:type_name -> google.protobuf.StringValue
+	6,  // 3: nacosx.Options.ip_addr:type_name -> google.protobuf.StringValue
+	7,  // 4: nacosx.Options.port:type_name -> google.protobuf.UInt64Value
+	7,  // 5: nacosx.Options.grpc_port:type_name -> google.protobuf.UInt64Value
+	6,  // 6: nacosx.Options.namespace:type_name -> google.protobuf.StringValue
+	6,  // 7: nacosx.Options.app_name:type_name -> google.protobuf.StringValue
+	6,  // 8: nacosx.Options.app_key:type_name -> google.protobuf.StringValue
+	6,  // 9: nacosx.Options.endpoint:type_name -> google.protobuf.StringValue
+	6,  // 10: nacosx.Options.region_id:type_name -> google.protobuf.StringValue
+	6,  // 11: nacosx.Options.access_key:type_name -> google.protobuf.StringValue
+	6,  // 12: nacosx.Options.secret_key:type_name -> google.protobuf.StringValue
+	6,  // 13: nacosx.Options.username:type_name -> google.protobuf.StringValue
+	6,  // 14: nacosx.Options.password:type_name -> google.protobuf.StringValue
+	6,  // 15: nacosx.Options.cache_dir:type_name -> google.protobuf.StringValue
+	8,  // 16: nacosx.Options.not_load_cache_at_start:type_name -> google.protobuf.BoolValue
+	8,  // 17: nacosx.Options.update_cache_when_empty:type_name -> google.protobuf.BoolValue
+	8,  // 18: nacosx.Options.disable_use_snapshot:type_name -> google.protobuf.BoolValue
+	9,  // 19: nacosx.Options.update_thread_num:type_name -> google.protobuf.Int32Value
+	6,  // 20: nacosx.Options.log_dir:type_name -> google.protobuf.StringValue
+	6,  // 21: nacosx.Options.log_level:type_name -> google.protobuf.StringValue
+	8,  // 22: nacosx.Options.append_to_stdout:type_name -> google.protobuf.BoolValue
+	2,  // 23: nacosx.Options.log_sampling:type_name -> nacosx.ClientLogSamplingConfig
+	3,  // 24: nacosx.Options.log_rolling_config:type_name -> nacosx.ClientLogRollingConfig
+	10, // 25: nacosx.Options.tls_cfg:type_name -> protobufx.TLSOptions
+	8,  // 26: nacosx.Options.async_update_service:type_name -> google.protobuf.BoolValue
+	6,  // 27: nacosx.Options.endpoint_context_path:type_name -> google.protobuf.StringValue
+	6,  // 28: nacosx.Options.endpoint_query_params:type_name -> google.protobuf.StringValue
+	6,  // 29: nacosx.Options.cluster_name:type_name -> google.protobuf.StringValue
+	7,  // 30: nacosx.Options.timeout_ms:type_name -> google.protobuf.UInt64Value
+	11, // 31: nacosx.Options.beat_interval:type_name -> google.protobuf.Int64Value
+	5,  // 32: nacosx.Options.app_conn_labels:type_name -> nacosx.Options.AppConnLabelsEntry
+	9,  // 33: nacosx.ClientLogSamplingConfig.initial:type_name -> google.protobuf.Int32Value
+	9,  // 34: nacosx.ClientLogSamplingConfig.there_after:type_name -> google.protobuf.Int32Value
+	6,  // 35: nacosx.ClientLogRollingConfig.filename:type_name -> google.protobuf.StringValue
+	9,  // 36: nacosx.ClientLogRollingConfig.max_size:type_name -> google.protobuf.Int32Value
+	9,  // 37: nacosx.ClientLogRollingConfig.max_age:type_name -> google.protobuf.Int32Value
+	9,  // 38: nacosx.ClientLogRollingConfig.max_backups:type_name -> google.protobuf.Int32Value
+	8,  // 39: nacosx.ClientLogRollingConfig.local_time:type_name -> google.protobuf.BoolValue
+	8,  // 40: nacosx.ClientLogRollingConfig.compress:type_name -> google.protobuf.BoolValue
+	1,  // 41: nacosx.Config.ConfigsEntry.value:type_name -> nacosx.Options
+	42, // [42:42] is the sub-list for method output_type
+	42, // [42:42] is the sub-list for method input_type
+	42, // [42:42] is the sub-list for extension type_name
+	42, // [42:42] is the sub-list for extension extendee
+	0,  // [0:42] is the sub-list for field type_name
 }
 
 func init() { file_pkg_nacosx_config_proto_init() }
@@ -185,7 +647,7 @@ func file_pkg_nacosx_config_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pkg_nacosx_config_proto_rawDesc), len(file_pkg_nacosx_config_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

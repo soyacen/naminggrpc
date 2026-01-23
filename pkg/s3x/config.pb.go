@@ -7,10 +7,8 @@
 package s3x
 
 import (
-	_ "github.com/soyacen/grocer/pkg/protobufx"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	_ "google.golang.org/protobuf/types/known/durationpb"
 	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 	reflect "reflect"
 	sync "sync"
@@ -164,7 +162,7 @@ var File_pkg_s3x_config_proto protoreflect.FileDescriptor
 
 const file_pkg_s3x_config_proto_rawDesc = "" +
 	"\n" +
-	"\x14pkg/s3x/config.proto\x12\x03s3x\x1a\x1egoogle/protobuf/duration.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x17pkg/protobufx/tls.proto\"\x86\x01\n" +
+	"\x14pkg/s3x/config.proto\x12\x03s3x\x1a\x1egoogle/protobuf/wrappers.proto\"\x86\x01\n" +
 	"\x06Config\x122\n" +
 	"\aconfigs\x18\x01 \x03(\v2\x18.s3x.Config.ConfigsEntryR\aconfigs\x1aH\n" +
 	"\fConfigsEntry\x12\x10\n" +
