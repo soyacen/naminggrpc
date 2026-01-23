@@ -22,9 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Configuration for Elasticsearch connections
 type Config struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Configs       map[string]*Options    `protobuf:"bytes,1,rep,name=configs,proto3" json:"configs,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Map of named Elasticsearch configurations
+	Configs       map[string]*Options `protobuf:"bytes,1,rep,name=configs,proto3" json:"configs,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -66,33 +68,53 @@ func (x *Config) GetConfigs() map[string]*Options {
 	return nil
 }
 
+// Options for Elasticsearch client configuration
 type Options struct {
-	state                  protoimpl.MessageState  `protogen:"open.v1"`
-	Addresses              []string                `protobuf:"bytes,1,rep,name=addresses,proto3" json:"addresses,omitempty"`                                                               // A list of Elasticsearch nodes to use.
-	Username               *wrapperspb.StringValue `protobuf:"bytes,2,opt,name=username,proto3,oneof" json:"username,omitempty"`                                                           // Username for HTTP Basic Authentication.
-	Password               *wrapperspb.StringValue `protobuf:"bytes,3,opt,name=password,proto3,oneof" json:"password,omitempty"`                                                           // Password for HTTP Basic Authentication.
-	CloudId                *wrapperspb.StringValue `protobuf:"bytes,4,opt,name=cloud_id,json=cloudId,proto3,oneof" json:"cloud_id,omitempty"`                                              // Endpoint for the Elastic Service (https://elastic.co/cloud).
-	ApiKey                 *wrapperspb.StringValue `protobuf:"bytes,5,opt,name=api_key,json=apiKey,proto3,oneof" json:"api_key,omitempty"`                                                 // Base64-encoded token for authorization; if set, overrides username/password and service token.
-	ServiceToken           *wrapperspb.StringValue `protobuf:"bytes,6,opt,name=service_token,json=serviceToken,proto3,oneof" json:"service_token,omitempty"`                               // Service token for authorization; if set, overrides username/password.
-	CertificateFingerprint *wrapperspb.StringValue `protobuf:"bytes,7,opt,name=certificate_fingerprint,json=certificateFingerprint,proto3,oneof" json:"certificate_fingerprint,omitempty"` // SHA256 hex fingerprint given by Elasticsearch on first launch.
-	// Header represents http.Header
-	Header map[string]string `protobuf:"bytes,8,rep,name=header,proto3" json:"header,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` // Global HTTP request header.
-	// PEM-encoded certificate authorities.
-	CaCert                   *wrapperspb.BytesValue `protobuf:"bytes,9,opt,name=ca_cert,json=caCert,proto3,oneof" json:"ca_cert,omitempty"`                                                            // When set, an empty certificate pool will be created, and the certificates will be appended to it.
-	RetryOnStatus            []int32                `protobuf:"varint,10,rep,packed,name=retry_on_status,json=retryOnStatus,proto3" json:"retry_on_status,omitempty"`                                  // List of status codes for retry. Default: 502, 503, 504.
-	DisableRetry             *wrapperspb.BoolValue  `protobuf:"bytes,11,opt,name=disable_retry,json=disableRetry,proto3,oneof" json:"disable_retry,omitempty"`                                         // Default: false.
-	MaxRetries               *wrapperspb.Int32Value `protobuf:"bytes,12,opt,name=max_retries,json=maxRetries,proto3,oneof" json:"max_retries,omitempty"`                                               // Default: 3.
-	CompressRequestBody      *wrapperspb.BoolValue  `protobuf:"bytes,13,opt,name=compress_request_body,json=compressRequestBody,proto3,oneof" json:"compress_request_body,omitempty"`                  // Default: false.
-	CompressRequestBodyLevel *wrapperspb.Int32Value `protobuf:"bytes,14,opt,name=compress_request_body_level,json=compressRequestBodyLevel,proto3,oneof" json:"compress_request_body_level,omitempty"` // Default: gzip.DefaultCompression.
-	PoolCompressor           *wrapperspb.BoolValue  `protobuf:"bytes,15,opt,name=pool_compressor,json=poolCompressor,proto3,oneof" json:"pool_compressor,omitempty"`                                   // If true, a sync.Pool based gzip writer is used. Default: false.
-	DiscoverNodesOnStart     *wrapperspb.BoolValue  `protobuf:"bytes,16,opt,name=discover_nodes_on_start,json=discoverNodesOnStart,proto3,oneof" json:"discover_nodes_on_start,omitempty"`             // Discover nodes when initializing the client. Default: false.
-	DiscoverNodesInterval    *wrapperspb.Int64Value `protobuf:"bytes,17,opt,name=discover_nodes_interval,json=discoverNodesInterval,proto3,oneof" json:"discover_nodes_interval,omitempty"`            // Discover nodes periodically in milliseconds. Default: disabled.
-	EnableMetrics            *wrapperspb.BoolValue  `protobuf:"bytes,18,opt,name=enable_metrics,json=enableMetrics,proto3,oneof" json:"enable_metrics,omitempty"`                                      // Enable the metrics collection.
-	EnableDebugLogger        *wrapperspb.BoolValue  `protobuf:"bytes,19,opt,name=enable_debug_logger,json=enableDebugLogger,proto3,oneof" json:"enable_debug_logger,omitempty"`                        // Enable the debug logging.
-	EnableCompatibilityMode  *wrapperspb.BoolValue  `protobuf:"bytes,20,opt,name=enable_compatibility_mode,json=enableCompatibilityMode,proto3,oneof" json:"enable_compatibility_mode,omitempty"`      // Enable sends compatibility header
-	DisableMetaHeader        *wrapperspb.BoolValue  `protobuf:"bytes,21,opt,name=disable_meta_header,json=disableMetaHeader,proto3,oneof" json:"disable_meta_header,omitempty"`                        // Disable the additional "X-Elastic-Client-Meta" HTTP header.
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// List of Elasticsearch node addresses to connect to
+	Addresses []string `protobuf:"bytes,1,rep,name=addresses,proto3" json:"addresses,omitempty"`
+	// Username for HTTP Basic Authentication
+	Username *wrapperspb.StringValue `protobuf:"bytes,2,opt,name=username,proto3,oneof" json:"username,omitempty"`
+	// Password for HTTP Basic Authentication
+	Password *wrapperspb.StringValue `protobuf:"bytes,3,opt,name=password,proto3,oneof" json:"password,omitempty"`
+	// Cloud ID for Elastic Service endpoint
+	CloudId *wrapperspb.StringValue `protobuf:"bytes,4,opt,name=cloud_id,json=cloudId,proto3,oneof" json:"cloud_id,omitempty"`
+	// API key for authorization (overrides username/password and service token if set)
+	ApiKey *wrapperspb.StringValue `protobuf:"bytes,5,opt,name=api_key,json=apiKey,proto3,oneof" json:"api_key,omitempty"`
+	// Service token for authorization (overrides username/password if set)
+	ServiceToken *wrapperspb.StringValue `protobuf:"bytes,6,opt,name=service_token,json=serviceToken,proto3,oneof" json:"service_token,omitempty"`
+	// SHA256 hex fingerprint of the certificate provided by Elasticsearch on first launch
+	CertificateFingerprint *wrapperspb.StringValue `protobuf:"bytes,7,opt,name=certificate_fingerprint,json=certificateFingerprint,proto3,oneof" json:"certificate_fingerprint,omitempty"`
+	// HTTP headers to include in all requests
+	Header map[string]string `protobuf:"bytes,8,rep,name=header,proto3" json:"header,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	// PEM-encoded certificate authorities
+	CaCert *wrapperspb.BytesValue `protobuf:"bytes,9,opt,name=ca_cert,json=caCert,proto3,oneof" json:"ca_cert,omitempty"`
+	// Status codes that trigger request retries
+	RetryOnStatus []int32 `protobuf:"varint,10,rep,packed,name=retry_on_status,json=retryOnStatus,proto3" json:"retry_on_status,omitempty"`
+	// Whether to disable automatic retries
+	DisableRetry *wrapperspb.BoolValue `protobuf:"bytes,11,opt,name=disable_retry,json=disableRetry,proto3,oneof" json:"disable_retry,omitempty"`
+	// Maximum number of retries for a request
+	MaxRetries *wrapperspb.Int32Value `protobuf:"bytes,12,opt,name=max_retries,json=maxRetries,proto3,oneof" json:"max_retries,omitempty"` // Note: retry_on_error function is omitted as functions cannot be serialized
+	// Whether to compress request body
+	CompressRequestBody *wrapperspb.BoolValue `protobuf:"bytes,13,opt,name=compress_request_body,json=compressRequestBody,proto3,oneof" json:"compress_request_body,omitempty"`
+	// Compression level for request body
+	CompressRequestBodyLevel *wrapperspb.Int32Value `protobuf:"bytes,14,opt,name=compress_request_body_level,json=compressRequestBodyLevel,proto3,oneof" json:"compress_request_body_level,omitempty"`
+	// Whether to use a sync.Pool based gzip writer for compression
+	PoolCompressor *wrapperspb.BoolValue `protobuf:"bytes,15,opt,name=pool_compressor,json=poolCompressor,proto3,oneof" json:"pool_compressor,omitempty"`
+	// Whether to discover nodes when initializing the client
+	DiscoverNodesOnStart *wrapperspb.BoolValue `protobuf:"bytes,16,opt,name=discover_nodes_on_start,json=discoverNodesOnStart,proto3,oneof" json:"discover_nodes_on_start,omitempty"`
+	// Interval for periodic node discovery in milliseconds
+	DiscoverNodesInterval *wrapperspb.Int64Value `protobuf:"bytes,17,opt,name=discover_nodes_interval,json=discoverNodesInterval,proto3,oneof" json:"discover_nodes_interval,omitempty"`
+	// Whether to enable metrics collection
+	EnableMetrics *wrapperspb.BoolValue `protobuf:"bytes,18,opt,name=enable_metrics,json=enableMetrics,proto3,oneof" json:"enable_metrics,omitempty"`
+	// Whether to enable debug logging
+	EnableDebugLogger *wrapperspb.BoolValue `protobuf:"bytes,19,opt,name=enable_debug_logger,json=enableDebugLogger,proto3,oneof" json:"enable_debug_logger,omitempty"`
+	// Whether to enable compatibility mode (sends compatibility header)
+	EnableCompatibilityMode *wrapperspb.BoolValue `protobuf:"bytes,20,opt,name=enable_compatibility_mode,json=enableCompatibilityMode,proto3,oneof" json:"enable_compatibility_mode,omitempty"`
+	// Whether to disable the additional "X-Elastic-Client-Meta" HTTP header
+	DisableMetaHeader *wrapperspb.BoolValue `protobuf:"bytes,21,opt,name=disable_meta_header,json=disableMetaHeader,proto3,oneof" json:"disable_meta_header,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *Options) Reset() {

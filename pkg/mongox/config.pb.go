@@ -22,9 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Configuration for MongoDB connections
 type Config struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Configs       map[string]*Options    `protobuf:"bytes,1,rep,name=configs,proto3" json:"configs,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Map of named MongoDB configurations
+	Configs       map[string]*Options `protobuf:"bytes,1,rep,name=configs,proto3" json:"configs,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -66,10 +68,13 @@ func (x *Config) GetConfigs() map[string]*Options {
 	return nil
 }
 
+// Options for MongoDB client configuration
 type Options struct {
-	state         protoimpl.MessageState  `protogen:"open.v1"`
-	Uri           *wrapperspb.StringValue `protobuf:"bytes,1,opt,name=uri,proto3" json:"uri,omitempty"`
-	EnableOtel    *wrapperspb.BoolValue   `protobuf:"bytes,2,opt,name=enable_otel,json=enableOtel,proto3" json:"enable_otel,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// MongoDB connection URI
+	Uri *wrapperspb.StringValue `protobuf:"bytes,1,opt,name=uri,proto3" json:"uri,omitempty"`
+	// Flag to enable OpenTelemetry tracing for MongoDB operations
+	EnableOtel    *wrapperspb.BoolValue `protobuf:"bytes,2,opt,name=enable_otel,json=enableOtel,proto3" json:"enable_otel,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

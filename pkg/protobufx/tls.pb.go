@@ -22,11 +22,16 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// TLSOptions contains configuration for TLS connections
 type TLSOptions struct {
-	state         protoimpl.MessageState  `protogen:"open.v1"`
-	CertFile      *wrapperspb.StringValue `protobuf:"bytes,1,opt,name=cert_file,json=certFile,proto3" json:"cert_file,omitempty"`
-	KeyFile       *wrapperspb.StringValue `protobuf:"bytes,2,opt,name=key_file,json=keyFile,proto3" json:"key_file,omitempty"`
-	CaFile        *wrapperspb.StringValue `protobuf:"bytes,3,opt,name=ca_file,json=caFile,proto3" json:"ca_file,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Path to the TLS certificate file
+	CertFile *wrapperspb.StringValue `protobuf:"bytes,1,opt,name=cert_file,json=certFile,proto3" json:"cert_file,omitempty"`
+	// Path to the TLS private key file
+	KeyFile *wrapperspb.StringValue `protobuf:"bytes,2,opt,name=key_file,json=keyFile,proto3" json:"key_file,omitempty"`
+	// Path to the Certificate Authority file
+	CaFile *wrapperspb.StringValue `protobuf:"bytes,3,opt,name=ca_file,json=caFile,proto3" json:"ca_file,omitempty"`
+	// Server name for SNI (Server Name Indication)
 	ServerName    *wrapperspb.StringValue `protobuf:"bytes,4,opt,name=server_name,json=serverName,proto3" json:"server_name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

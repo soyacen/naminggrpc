@@ -24,9 +24,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Configuration for Redis connections
 type Config struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Configs       map[string]*Options    `protobuf:"bytes,1,rep,name=configs,proto3" json:"configs,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Map of named Redis configurations
+	Configs       map[string]*Options `protobuf:"bytes,1,rep,name=configs,proto3" json:"configs,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -68,6 +70,7 @@ func (x *Config) GetConfigs() map[string]*Options {
 	return nil
 }
 
+// Options for Redis client configuration
 type Options struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Either a single address or a seed list of host:port addresses
@@ -79,27 +82,46 @@ type Options struct {
 	// Only single-node and failover clients.
 	Db *wrapperspb.Int32Value `protobuf:"bytes,3,opt,name=db,proto3" json:"db,omitempty"`
 	// Common options.
-	Protocol              *wrapperspb.Int32Value  `protobuf:"bytes,4,opt,name=protocol,proto3" json:"protocol,omitempty"`
-	Username              *wrapperspb.StringValue `protobuf:"bytes,5,opt,name=username,proto3" json:"username,omitempty"`
-	Password              *wrapperspb.StringValue `protobuf:"bytes,6,opt,name=password,proto3" json:"password,omitempty"`
-	SentinelUsername      *wrapperspb.StringValue `protobuf:"bytes,7,opt,name=sentinel_username,json=sentinelUsername,proto3" json:"sentinel_username,omitempty"`
-	SentinelPassword      *wrapperspb.StringValue `protobuf:"bytes,8,opt,name=sentinel_password,json=sentinelPassword,proto3" json:"sentinel_password,omitempty"`
-	MaxRetries            *wrapperspb.Int32Value  `protobuf:"bytes,9,opt,name=max_retries,json=maxRetries,proto3" json:"max_retries,omitempty"`
-	MinRetryBackoff       *durationpb.Duration    `protobuf:"bytes,10,opt,name=min_retry_backoff,json=minRetryBackoff,proto3" json:"min_retry_backoff,omitempty"`
-	MaxRetryBackoff       *durationpb.Duration    `protobuf:"bytes,11,opt,name=max_retry_backoff,json=maxRetryBackoff,proto3" json:"max_retry_backoff,omitempty"`
-	DialTimeout           *durationpb.Duration    `protobuf:"bytes,12,opt,name=dial_timeout,json=dialTimeout,proto3" json:"dial_timeout,omitempty"`
-	ReadTimeout           *durationpb.Duration    `protobuf:"bytes,13,opt,name=read_timeout,json=readTimeout,proto3" json:"read_timeout,omitempty"`
-	WriteTimeout          *durationpb.Duration    `protobuf:"bytes,14,opt,name=write_timeout,json=writeTimeout,proto3" json:"write_timeout,omitempty"`
-	ContextTimeoutEnabled *wrapperspb.BoolValue   `protobuf:"bytes,15,opt,name=context_timeout_enabled,json=contextTimeoutEnabled,proto3" json:"context_timeout_enabled,omitempty"`
+	// Protocol version to use (e.g. 2 or 3 for RESP2 or RESP3)
+	Protocol *wrapperspb.Int32Value `protobuf:"bytes,4,opt,name=protocol,proto3" json:"protocol,omitempty"`
+	// Username for ACL authentication (Redis 6.0+)
+	Username *wrapperspb.StringValue `protobuf:"bytes,5,opt,name=username,proto3" json:"username,omitempty"`
+	// Password for authentication
+	Password *wrapperspb.StringValue `protobuf:"bytes,6,opt,name=password,proto3" json:"password,omitempty"`
+	// Username for sentinel authentication
+	SentinelUsername *wrapperspb.StringValue `protobuf:"bytes,7,opt,name=sentinel_username,json=sentinelUsername,proto3" json:"sentinel_username,omitempty"`
+	// Password for sentinel authentication
+	SentinelPassword *wrapperspb.StringValue `protobuf:"bytes,8,opt,name=sentinel_password,json=sentinelPassword,proto3" json:"sentinel_password,omitempty"`
+	// Maximum number of retries before giving up
+	MaxRetries *wrapperspb.Int32Value `protobuf:"bytes,9,opt,name=max_retries,json=maxRetries,proto3" json:"max_retries,omitempty"`
+	// Minimum backoff between each retry
+	MinRetryBackoff *durationpb.Duration `protobuf:"bytes,10,opt,name=min_retry_backoff,json=minRetryBackoff,proto3" json:"min_retry_backoff,omitempty"`
+	// Maximum backoff between each retry
+	MaxRetryBackoff *durationpb.Duration `protobuf:"bytes,11,opt,name=max_retry_backoff,json=maxRetryBackoff,proto3" json:"max_retry_backoff,omitempty"`
+	// Timeout for establishing new connections
+	DialTimeout *durationpb.Duration `protobuf:"bytes,12,opt,name=dial_timeout,json=dialTimeout,proto3" json:"dial_timeout,omitempty"`
+	// Timeout for socket reads
+	ReadTimeout *durationpb.Duration `protobuf:"bytes,13,opt,name=read_timeout,json=readTimeout,proto3" json:"read_timeout,omitempty"`
+	// Timeout for socket writes
+	WriteTimeout *durationpb.Duration `protobuf:"bytes,14,opt,name=write_timeout,json=writeTimeout,proto3" json:"write_timeout,omitempty"`
+	// Enable timeout for context.Ctx values
+	ContextTimeoutEnabled *wrapperspb.BoolValue `protobuf:"bytes,15,opt,name=context_timeout_enabled,json=contextTimeoutEnabled,proto3" json:"context_timeout_enabled,omitempty"`
 	// PoolFIFO uses FIFO mode for each node connection pool GET/PUT (default LIFO).
-	PoolFifo        *wrapperspb.BoolValue  `protobuf:"bytes,16,opt,name=pool_fifo,json=poolFifo,proto3" json:"pool_fifo,omitempty"`
-	PoolSize        *wrapperspb.Int32Value `protobuf:"bytes,17,opt,name=pool_size,json=poolSize,proto3" json:"pool_size,omitempty"`
-	PoolTimeout     *durationpb.Duration   `protobuf:"bytes,18,opt,name=pool_timeout,json=poolTimeout,proto3" json:"pool_timeout,omitempty"`
-	MinIdleConns    *wrapperspb.Int32Value `protobuf:"bytes,19,opt,name=min_idle_conns,json=minIdleConns,proto3" json:"min_idle_conns,omitempty"`
-	MaxIdleConns    *wrapperspb.Int32Value `protobuf:"bytes,20,opt,name=max_idle_conns,json=maxIdleConns,proto3" json:"max_idle_conns,omitempty"`
-	MaxActiveConns  *wrapperspb.Int32Value `protobuf:"bytes,21,opt,name=max_active_conns,json=maxActiveConns,proto3" json:"max_active_conns,omitempty"`
-	ConnMaxIdleTime *durationpb.Duration   `protobuf:"bytes,22,opt,name=conn_max_idle_time,json=connMaxIdleTime,proto3" json:"conn_max_idle_time,omitempty"`
-	ConnMaxLifetime *durationpb.Duration   `protobuf:"bytes,23,opt,name=conn_max_lifetime,json=connMaxLifetime,proto3" json:"conn_max_lifetime,omitempty"`
+	PoolFifo *wrapperspb.BoolValue `protobuf:"bytes,16,opt,name=pool_fifo,json=poolFifo,proto3" json:"pool_fifo,omitempty"`
+	// Size of connection pool (number of connections)
+	PoolSize *wrapperspb.Int32Value `protobuf:"bytes,17,opt,name=pool_size,json=poolSize,proto3" json:"pool_size,omitempty"`
+	// Connection age threshold to close connections
+	PoolTimeout *durationpb.Duration `protobuf:"bytes,18,opt,name=pool_timeout,json=poolTimeout,proto3" json:"pool_timeout,omitempty"`
+	// Minimum number of idle connections
+	MinIdleConns *wrapperspb.Int32Value `protobuf:"bytes,19,opt,name=min_idle_conns,json=minIdleConns,proto3" json:"min_idle_conns,omitempty"`
+	// Maximum number of idle connections
+	MaxIdleConns *wrapperspb.Int32Value `protobuf:"bytes,20,opt,name=max_idle_conns,json=maxIdleConns,proto3" json:"max_idle_conns,omitempty"`
+	// Maximum number of active connections
+	MaxActiveConns *wrapperspb.Int32Value `protobuf:"bytes,21,opt,name=max_active_conns,json=maxActiveConns,proto3" json:"max_active_conns,omitempty"`
+	// Maximum idle time for a connection
+	ConnMaxIdleTime *durationpb.Duration `protobuf:"bytes,22,opt,name=conn_max_idle_time,json=connMaxIdleTime,proto3" json:"conn_max_idle_time,omitempty"`
+	// Maximum lifetime for a connection
+	ConnMaxLifetime *durationpb.Duration `protobuf:"bytes,23,opt,name=conn_max_lifetime,json=connMaxLifetime,proto3" json:"conn_max_lifetime,omitempty"`
 	// ReadBufferSize is the size of the bufio.Reader buffer for each connection.
 	// Larger buffers can improve performance for commands that return large responses.
 	// Smaller buffers can improve memory usage for larger pools.
@@ -108,24 +130,30 @@ type Options struct {
 	// Larger buffers can improve performance for large pipelines and commands with many arguments.
 	// Smaller buffers can improve memory usage for larger pools.
 	WriteBufferSize *wrapperspb.Int32Value `protobuf:"bytes,25,opt,name=write_buffer_size,json=writeBufferSize,proto3" json:"write_buffer_size,omitempty"`
-	TlsConfig       *protobufx.TLSOptions  `protobuf:"bytes,26,opt,name=tls_config,json=tlsConfig,proto3" json:"tls_config,omitempty"`
+	// TLS configuration for encrypted connections
+	TlsConfig *protobufx.TLSOptions `protobuf:"bytes,26,opt,name=tls_config,json=tlsConfig,proto3" json:"tls_config,omitempty"`
 	// Only cluster clients.
 	ClusterOptions *Options_ClusterOptions `protobuf:"bytes,27,opt,name=cluster_options,json=clusterOptions,proto3" json:"cluster_options,omitempty"`
 	// Only failover clients.
 	FailoverOptions *Options_FailOverOptions `protobuf:"bytes,28,opt,name=failover_options,json=failoverOptions,proto3" json:"failover_options,omitempty"`
-	DisableIdentity *wrapperspb.BoolValue    `protobuf:"bytes,29,opt,name=disable_identity,json=disableIdentity,proto3" json:"disable_identity,omitempty"`
-	IdentitySuffix  *wrapperspb.StringValue  `protobuf:"bytes,30,opt,name=identity_suffix,json=identitySuffix,proto3" json:"identity_suffix,omitempty"`
+	// Disable client identity tracking
+	DisableIdentity *wrapperspb.BoolValue `protobuf:"bytes,29,opt,name=disable_identity,json=disableIdentity,proto3" json:"disable_identity,omitempty"`
+	// Suffix to append to client identity
+	IdentitySuffix *wrapperspb.StringValue `protobuf:"bytes,30,opt,name=identity_suffix,json=identitySuffix,proto3" json:"identity_suffix,omitempty"`
 	// FailingTimeoutSeconds is the timeout in seconds for marking a cluster node as failing.
 	FailingTimeoutSeconds *wrapperspb.Int32Value `protobuf:"bytes,31,opt,name=failing_timeout_seconds,json=failingTimeoutSeconds,proto3" json:"failing_timeout_seconds,omitempty"`
-	UnstableResp3         *wrapperspb.BoolValue  `protobuf:"bytes,32,opt,name=unstable_resp3,json=unstableResp3,proto3" json:"unstable_resp3,omitempty"`
+	// Enable experimental RESP3 support
+	UnstableResp3 *wrapperspb.BoolValue `protobuf:"bytes,32,opt,name=unstable_resp3,json=unstableResp3,proto3" json:"unstable_resp3,omitempty"`
 	// IsClusterMode can be used when only one Addrs is provided (e.g. Elasticache supports setting up cluster mode with configuration endpoint).
 	IsClusterMode *wrapperspb.BoolValue `protobuf:"bytes,33,opt,name=is_cluster_mode,json=isClusterMode,proto3" json:"is_cluster_mode,omitempty"`
 	// MaintNotificationsConfig provides configuration for maintnotifications upgrades.
 	MaintNotificationsConfig *Options_MaintNotificationsConfig `protobuf:"bytes,34,opt,name=maint_notifications_config,json=maintNotificationsConfig,proto3" json:"maint_notifications_config,omitempty"`
-	EnableTracing            *wrapperspb.BoolValue             `protobuf:"bytes,35,opt,name=enable_tracing,json=enableTracing,proto3" json:"enable_tracing,omitempty"`
-	EnableMetrics            *wrapperspb.BoolValue             `protobuf:"bytes,36,opt,name=enable_metrics,json=enableMetrics,proto3" json:"enable_metrics,omitempty"`
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	// Enable tracing for Redis commands
+	EnableTracing *wrapperspb.BoolValue `protobuf:"bytes,35,opt,name=enable_tracing,json=enableTracing,proto3" json:"enable_tracing,omitempty"`
+	// Enable metrics collection for Redis operations
+	EnableMetrics *wrapperspb.BoolValue `protobuf:"bytes,36,opt,name=enable_metrics,json=enableMetrics,proto3" json:"enable_metrics,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Options) Reset() {
@@ -410,14 +438,19 @@ func (x *Options) GetEnableMetrics() *wrapperspb.BoolValue {
 	return nil
 }
 
+// Options specific to Redis cluster connections
 type Options_ClusterOptions struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	MaxRedirects   *wrapperspb.Int32Value `protobuf:"bytes,1,opt,name=max_redirects,json=maxRedirects,proto3" json:"max_redirects,omitempty"`
-	ReadOnly       *wrapperspb.BoolValue  `protobuf:"bytes,2,opt,name=read_only,json=readOnly,proto3" json:"read_only,omitempty"`
-	RouteByLatency *wrapperspb.BoolValue  `protobuf:"bytes,3,opt,name=route_by_latency,json=routeByLatency,proto3" json:"route_by_latency,omitempty"`
-	RouteRandomly  *wrapperspb.BoolValue  `protobuf:"bytes,4,opt,name=route_randomly,json=routeRandomly,proto3" json:"route_randomly,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Maximum number of redirects to follow before giving up
+	MaxRedirects *wrapperspb.Int32Value `protobuf:"bytes,1,opt,name=max_redirects,json=maxRedirects,proto3" json:"max_redirects,omitempty"`
+	// Enable read-only commands on slave nodes
+	ReadOnly *wrapperspb.BoolValue `protobuf:"bytes,2,opt,name=read_only,json=readOnly,proto3" json:"read_only,omitempty"`
+	// Route read-only commands by latency
+	RouteByLatency *wrapperspb.BoolValue `protobuf:"bytes,3,opt,name=route_by_latency,json=routeByLatency,proto3" json:"route_by_latency,omitempty"`
+	// Route read-only commands randomly among slaves
+	RouteRandomly *wrapperspb.BoolValue `protobuf:"bytes,4,opt,name=route_randomly,json=routeRandomly,proto3" json:"route_randomly,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Options_ClusterOptions) Reset() {
@@ -478,6 +511,7 @@ func (x *Options_ClusterOptions) GetRouteRandomly() *wrapperspb.BoolValue {
 	return nil
 }
 
+// Options for Redis failover (sentinel) setup
 type Options_FailOverOptions struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The sentinel master name.
@@ -523,10 +557,12 @@ func (x *Options_FailOverOptions) GetMasterName() *wrapperspb.StringValue {
 	return nil
 }
 
+// Configuration for maintenance notifications
 type Options_MaintNotificationsConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Placeholder for maint notifications config
-	Enabled       *wrapperspb.BoolValue   `protobuf:"bytes,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	Enabled *wrapperspb.BoolValue `protobuf:"bytes,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// Channel name for maintenance notifications
 	Channel       *wrapperspb.StringValue `protobuf:"bytes,2,opt,name=channel,proto3" json:"channel,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

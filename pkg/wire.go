@@ -10,7 +10,6 @@ import (
 	"github.com/soyacen/grocer/pkg/mongox"
 	"github.com/soyacen/grocer/pkg/nacosx"
 	"github.com/soyacen/grocer/pkg/redisx"
-	"github.com/soyacen/grocer/pkg/registryx"
 )
 
 var Provider = wire.NewSet(
@@ -22,5 +21,4 @@ var Provider = wire.NewSet(
 	mongox.Provider,
 	nacosx.Provider,
 	redisx.Provider,
-	registryx.Provider,
 )

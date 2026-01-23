@@ -6,5 +6,5 @@ import (
 
 var Provider = wire.NewSet(
 	NewConfigClients,
-	NewRegistryClients,
+	NewNamingClients,
 )
