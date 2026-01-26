@@ -62,7 +62,7 @@ func initRun(_ *cobra.Command, _ []string) error {
 	// Dir must not exist or must be an empty directory.
 	de, err := os.ReadDir(dir)
 	if err == nil && len(de) > 0 {
-		return errors.Wrap(err, "target directory exists and is non-empty")
+		return errors.New("target directory exists and is non-empty")
 	}
 	if err != nil {
 		// need make directory

@@ -7,17 +7,14 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "grocer",
-	Short: "",
-	Long:  ``,
+	Use:          "grocer",
+	Short:        "",
+	Long:         ``,
+	SilenceUsage: true,
 }
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
-}
-
-func init() {
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
