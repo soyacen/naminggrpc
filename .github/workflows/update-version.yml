@@ -1,0 +1,50 @@
+name: Update Version
+
+on:
+  release:
+    types: [published]  # 当发布创建时触发
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25.5'
+          
+      - name: Get release version
+        id: get_version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          if [[ "$VERSION" == "refs/tags/"* ]]; then
+            # 如果是从 release 事件触发，需要从 GITHUB_REF 获取
+            VERSION=$(echo $GITHUB_REF | sed 's|refs/tags/||')
+          else
+            VERSION=${{ github.event.release.tag_name }}
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Release version: $VERSION"
+          
+      - name: Update version in source code
+        run: |
+          # 替换 cmd/version.go 文件中的版本号
+          sed -i "s/var Version = \".*\"/var Version = \"$VERSION\"/" cmd/version.go
+          echo "Updated version in cmd/version.go to $VERSION"
+          
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update version to ${{ env.VERSION }}"
+          title: "Update version to ${{ env.VERSION }}"
+          body: "Automatically update the version constant to ${{ env.VERSION }}"
+          branch: "update-version-${{ env.VERSION }}"
+          delete-branch: true

@@ -2,7 +2,6 @@
 
 # Variables
 VERSION := $(shell git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-COMMIT := $(shell git rev-parse HEAD 2>/dev/null || echo "unknown")
 
 # Generate protobuf files
 protoc:
@@ -12,12 +11,12 @@ protoc:
 # Build the project
 build:
 	@echo "Building the project..."
-	go build -ldflags="-X github.com/soyacen/grocer/cmd.Version=$(VERSION) -X github.com/soyacen/grocer/cmd.Commit=$(COMMIT)" -o bin/grocer .
+	go build -ldflags="-X github.com/soyacen/grocer/cmd.Version=$(VERSION)" -o bin/grocer .
 
 # Install the project
 install:
 	@echo "Installing the project..."
-	go install -ldflags="-X github.com/soyacen/grocer/cmd.Version=$(VERSION) -X github.com/soyacen/grocer/cmd.Commit=$(COMMIT)" .
+	go install -ldflags="-X github.com/soyacen/grocer/cmd.Version=$(VERSION)" .
 
 help:
 	@echo "Available targets:"
