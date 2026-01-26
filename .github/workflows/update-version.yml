@@ -22,23 +22,37 @@ jobs:
         with:
           go-version: '1.25.5'
           
-      - name: Get release version
+      - name: Get release version and calculate next dev version
         id: get_version
         run: |
-          VERSION=${{ github.event.release.tag_name }}
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "Release version: $VERSION"
+          RELEASE_VERSION=${{ github.event.release.tag_name }}
+          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
           
-      - name: Update version in source code
+          # 解析版本号并计算下一个开发版本
+          # 例如：如果发布 v1.2.3，则将源码中的版本更新为 v1.2.4-dev
+          IFS='.' read -ra VER_PARTS <<< "${RELEASE_VERSION#v}"
+          MAJOR="${VER_PARTS[0]}"
+          MINOR="${VER_PARTS[1]}"
+          PATCH="${VER_PARTS[2]#-}"
+          
+          # 计算下一个补丁版本
+          NEXT_PATCH=$((PATCH + 1))
+          NEXT_DEV_VERSION="v${MAJOR}.${MINOR}.${NEXT_PATCH}-dev"
+          
+          echo "NEXT_DEV_VERSION=$NEXT_DEV_VERSION" >> $GITHUB_ENV
+          echo "Release version: $RELEASE_VERSION"
+          echo "Next development version: $NEXT_DEV_VERSION"
+          
+      - name: Update version in source code to next dev version
         run: |
-          # 替换 cmd/version.go 文件中的版本号
-          sed -i "s/var Version = \".*\"/var Version = \"$VERSION\"/" cmd/version.go
-          echo "Updated version in cmd/version.go to $VERSION"
+          # 替换 cmd/version.go 文件中的版本号为下一个开发版本
+          sed -i "s/var Version = \".*\"/var Version = \"${{ env.NEXT_DEV_VERSION }}\"/" cmd/version.go
+          echo "Updated version in cmd/version.go to ${{ env.NEXT_DEV_VERSION }}"
           
       - name: Commit and push changes directly
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add cmd/version.go
-          git commit -m "chore: update version to $VERSION"
+          git commit -m "chore: bump version to ${{ env.NEXT_DEV_VERSION }}"
           git push
