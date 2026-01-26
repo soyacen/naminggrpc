@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        v6.33.4
-// source: grpc.proto
+// source: api/grpc/grpc.proto
 
 package grpc
 
@@ -31,7 +31,7 @@ type HelloRequest struct {
 
 func (x *HelloRequest) Reset() {
 	*x = HelloRequest{}
-	mi := &file_grpc_proto_msgTypes[0]
+	mi := &file_api_grpc_grpc_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -43,7 +43,7 @@ func (x *HelloRequest) String() string {
 func (*HelloRequest) ProtoMessage() {}
 
 func (x *HelloRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_grpc_proto_msgTypes[0]
+	mi := &file_api_grpc_grpc_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -56,7 +56,7 @@ func (x *HelloRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HelloRequest.ProtoReflect.Descriptor instead.
 func (*HelloRequest) Descriptor() ([]byte, []int) {
-	return file_grpc_proto_rawDescGZIP(), []int{0}
+	return file_api_grpc_grpc_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *HelloRequest) GetName() string {
@@ -76,7 +76,7 @@ type HelloReply struct {
 
 func (x *HelloReply) Reset() {
 	*x = HelloReply{}
-	mi := &file_grpc_proto_msgTypes[1]
+	mi := &file_api_grpc_grpc_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -88,7 +88,7 @@ func (x *HelloReply) String() string {
 func (*HelloReply) ProtoMessage() {}
 
 func (x *HelloReply) ProtoReflect() protoreflect.Message {
-	mi := &file_grpc_proto_msgTypes[1]
+	mi := &file_api_grpc_grpc_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -101,7 +101,7 @@ func (x *HelloReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HelloReply.ProtoReflect.Descriptor instead.
 func (*HelloReply) Descriptor() ([]byte, []int) {
-	return file_grpc_proto_rawDescGZIP(), []int{1}
+	return file_api_grpc_grpc_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *HelloReply) GetMessage() string {
@@ -111,12 +111,11 @@ func (x *HelloReply) GetMessage() string {
 	return ""
 }
 
-var File_grpc_proto protoreflect.FileDescriptor
+var File_api_grpc_grpc_proto protoreflect.FileDescriptor
 
-const file_grpc_proto_rawDesc = "" +
+const file_api_grpc_grpc_proto_rawDesc = "" +
 	"\n" +
-	"\n" +
-	"grpc.proto\x12\x0egrocer.grpc.v1\"\"\n" +
+	"\x13api/grpc/grpc.proto\x12\x0egrocer.grpc.v1\"\"\n" +
 	"\fHelloRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\"&\n" +
 	"\n" +
@@ -126,23 +125,23 @@ const file_grpc_proto_rawDesc = "" +
 	"\bSayHello\x12\x1c.grocer.grpc.v1.HelloRequest\x1a\x1a.grocer.grpc.v1.HelloReply\"\x00B<Z:github.com/soyacen/grocer/internal/layout/api/grpc/v1;grpcb\x06proto3"
 
 var (
-	file_grpc_proto_rawDescOnce sync.Once
-	file_grpc_proto_rawDescData []byte
+	file_api_grpc_grpc_proto_rawDescOnce sync.Once
+	file_api_grpc_grpc_proto_rawDescData []byte
 )
 
-func file_grpc_proto_rawDescGZIP() []byte {
-	file_grpc_proto_rawDescOnce.Do(func() {
-		file_grpc_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_grpc_proto_rawDesc), len(file_grpc_proto_rawDesc)))
+func file_api_grpc_grpc_proto_rawDescGZIP() []byte {
+	file_api_grpc_grpc_proto_rawDescOnce.Do(func() {
+		file_api_grpc_grpc_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_api_grpc_grpc_proto_rawDesc), len(file_api_grpc_grpc_proto_rawDesc)))
 	})
-	return file_grpc_proto_rawDescData
+	return file_api_grpc_grpc_proto_rawDescData
 }
 
-var file_grpc_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_grpc_proto_goTypes = []any{
+var file_api_grpc_grpc_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_api_grpc_grpc_proto_goTypes = []any{
 	(*HelloRequest)(nil), // 0: grocer.grpc.v1.HelloRequest
 	(*HelloReply)(nil),   // 1: grocer.grpc.v1.HelloReply
 }
-var file_grpc_proto_depIdxs = []int32{
+var file_api_grpc_grpc_proto_depIdxs = []int32{
 	0, // 0: grocer.grpc.v1.Greeter.SayHello:input_type -> grocer.grpc.v1.HelloRequest
 	1, // 1: grocer.grpc.v1.Greeter.SayHello:output_type -> grocer.grpc.v1.HelloReply
 	1, // [1:2] is the sub-list for method output_type
@@ -152,26 +151,26 @@ var file_grpc_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_grpc_proto_init() }
-func file_grpc_proto_init() {
-	if File_grpc_proto != nil {
+func init() { file_api_grpc_grpc_proto_init() }
+func file_api_grpc_grpc_proto_init() {
+	if File_api_grpc_grpc_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_grpc_proto_rawDesc), len(file_grpc_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_grpc_grpc_proto_rawDesc), len(file_api_grpc_grpc_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_grpc_proto_goTypes,
-		DependencyIndexes: file_grpc_proto_depIdxs,
-		MessageInfos:      file_grpc_proto_msgTypes,
+		GoTypes:           file_api_grpc_grpc_proto_goTypes,
+		DependencyIndexes: file_api_grpc_grpc_proto_depIdxs,
+		MessageInfos:      file_api_grpc_grpc_proto_msgTypes,
 	}.Build()
-	File_grpc_proto = out.File
-	file_grpc_proto_goTypes = nil
-	file_grpc_proto_depIdxs = nil
+	File_api_grpc_grpc_proto = out.File
+	file_api_grpc_grpc_proto_goTypes = nil
+	file_api_grpc_grpc_proto_depIdxs = nil
 }
