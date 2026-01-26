@@ -151,28 +151,43 @@ func fixCmdCronjobGo(data []byte, dir string) []byte {
 
 	// 遍历 AST 查找 rootCmd 变量的 Use 字段
 	ast.Inspect(f, func(n ast.Node) bool {
-		switch x := n.(type) {
-		case *ast.CompositeLit:
-			// 查找 cobra.Command 的结构体字面量
-			if sel, ok := x.Type.(*ast.SelectorExpr); ok {
-				if ident, ok := sel.X.(*ast.Ident); ok && ident.Name == "cobra" && sel.Sel.Name == "Command" {
-					// 遍历结构体字段
-					for _, elt := range x.Elts {
-						if kv, ok := elt.(*ast.KeyValueExpr); ok {
-							if key, ok := kv.Key.(*ast.Ident); ok && key.Name == "Use" {
-								// 修改 Use 字段的值
-								if val, ok := kv.Value.(*ast.BasicLit); ok && val.Kind == token.STRING {
-									oldVal, _ := strconv.Unquote(val.Value)
-									newVal := strings.Replace(oldVal, "cronjob", path.Base(dir), -1)
-									if newVal != oldVal {
-										buf.Replace(fset.Position(kv.Value.Pos()).Offset, fset.Position(kv.Value.End()).Offset,
-											strconv.Quote(newVal))
-									}
-								}
-							}
-						}
-					}
-				}
+		x, ok := n.(*ast.CompositeLit)
+		if !ok {
+			return true
+		}
+
+		sel, ok := x.Type.(*ast.SelectorExpr)
+		if !ok {
+			return true
+		}
+
+		ident, ok := sel.X.(*ast.Ident)
+		if !ok || ident.Name != "cobra" || sel.Sel.Name != "Command" {
+			return true
+		}
+
+		// 遍历结构体字段
+		for _, elt := range x.Elts {
+			kv, ok := elt.(*ast.KeyValueExpr)
+			if !ok {
+				continue
+			}
+
+			key, ok := kv.Key.(*ast.Ident)
+			if !ok || key.Name != "Use" {
+				continue
+			}
+
+			val, ok := kv.Value.(*ast.BasicLit)
+			if !ok || val.Kind != token.STRING {
+				continue
+			}
+
+			oldVal, _ := strconv.Unquote(val.Value)
+			newVal := strings.Replace(oldVal, "cronjob", path.Base(dir), -1)
+			if newVal != oldVal {
+				buf.Replace(fset.Position(kv.Value.Pos()).Offset, fset.Position(kv.Value.End()).Offset,
+					strconv.Quote(newVal))
 			}
 		}
 		return true
