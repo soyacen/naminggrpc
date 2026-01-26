@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package grocer.pkg.esx;
+option go_package = "github.com/soyacen/grocer/pkg/esx;esx";
+
+import "google/protobuf/wrappers.proto";
+
+// Configuration for Elasticsearch connections
+message Config {
+  // Map of named Elasticsearch configurations
+  map<string, Options> configs = 1;
+}
+
+// Options for Elasticsearch client configuration
+message Options {
+  // List of Elasticsearch node addresses to connect to
+  repeated string addresses = 1;
+  // Username for HTTP Basic Authentication
+  optional google.protobuf.StringValue username = 2;
+  // Password for HTTP Basic Authentication
+  optional google.protobuf.StringValue password = 3;
+
+  // Cloud ID for Elastic Service endpoint
+  optional google.protobuf.StringValue cloud_id = 4;
+  // API key for authorization (overrides username/password and service token if set)
+  optional google.protobuf.StringValue api_key = 5;
+  // Service token for authorization (overrides username/password if set)
+  optional google.protobuf.StringValue service_token = 6;
+  // SHA256 hex fingerprint of the certificate provided by Elasticsearch on first launch
+  optional google.protobuf.StringValue certificate_fingerprint = 7;
+
+  // HTTP headers to include in all requests
+  map<string, string> header = 8;
+
+  // PEM-encoded certificate authorities
+  optional google.protobuf.BytesValue ca_cert = 9;
+
+  // Status codes that trigger request retries
+  repeated int32 retry_on_status = 10;
+  // Whether to disable automatic retries
+  optional google.protobuf.BoolValue disable_retry = 11;
+  // Maximum number of retries for a request
+  optional google.protobuf.Int32Value max_retries = 12;
+  // Note: retry_on_error function is omitted as functions cannot be serialized
+
+  // Whether to compress request body
+  optional google.protobuf.BoolValue compress_request_body = 13;
+  // Compression level for request body
+  optional google.protobuf.Int32Value compress_request_body_level = 14;
+  // Whether to use a sync.Pool based gzip writer for compression
+  optional google.protobuf.BoolValue pool_compressor = 15;
+
+  // Whether to discover nodes when initializing the client
+  optional google.protobuf.BoolValue discover_nodes_on_start = 16;
+  // Interval for periodic node discovery in milliseconds
+  optional google.protobuf.Int64Value discover_nodes_interval = 17;
+
+  // Whether to enable metrics collection
+  optional google.protobuf.BoolValue enable_metrics = 18;
+  // Whether to enable debug logging
+  optional google.protobuf.BoolValue enable_debug_logger = 19;
+  // Whether to enable compatibility mode (sends compatibility header)
+  optional google.protobuf.BoolValue enable_compatibility_mode = 20;
+
+  // Whether to disable the additional "X-Elastic-Client-Meta" HTTP header
+  optional google.protobuf.BoolValue disable_meta_header = 21;
+}

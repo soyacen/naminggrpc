@@ -1,0 +1,20 @@
+syntax = "proto3";
+package grocer.pkg.dbx;
+option go_package = "github.com/soyacen/grocer/pkg/dbx;dbx";
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/wrappers.proto";
+
+message Config {
+  map<string, Options> configs = 1;
+}
+
+message Options {
+  google.protobuf.StringValue driver_name        = 1;
+  google.protobuf.StringValue dsn                = 2;
+  google.protobuf.Duration    ping_timeout       = 3;
+  google.protobuf.Int32Value  max_idle_conns     = 4;
+  google.protobuf.Int32Value  max_open_conns     = 5;
+  google.protobuf.Duration    conn_max_lifetime  = 6;
+  google.protobuf.Duration    conn_max_idle_time = 7;
+}

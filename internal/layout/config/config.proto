@@ -8,6 +8,5 @@ import "pkg/protobufx/tls.proto"
 
 
 message Config {
-  // Map of named Redis configurations
-  map<string, Options> configs = 1;
+  
 }

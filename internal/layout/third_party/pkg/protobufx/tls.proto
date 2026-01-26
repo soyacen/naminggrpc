@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package grocer.pkg.protobufx;
+option go_package = "github.com/soyacen/grocer/pkg/protobufx;protobufx";
+
+import "google/protobuf/wrappers.proto";
+
+// TLSOptions contains configuration for TLS connections
+message TLSOptions {
+  // Path to the TLS certificate file
+  google.protobuf.StringValue cert_file   = 1;
+  // Path to the TLS private key file
+  google.protobuf.StringValue key_file    = 2;
+  // Path to the Certificate Authority file
+  google.protobuf.StringValue ca_file     = 3;
+  // Server name for SNI (Server Name Indication)
+  google.protobuf.StringValue server_name = 4;
+}

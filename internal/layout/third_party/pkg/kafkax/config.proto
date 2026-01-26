@@ -1,0 +1,51 @@
+syntax = "proto3";
+package grocer.pkg.kafkax;
+option go_package = "github.com/soyacen/grocer/pkg/kafkax;kafkax";
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/wrappers.proto";
+
+message Config {
+  map<string, Options> configs = 1;
+}
+
+message Options {
+  message Receiver{
+    message Group {
+      message Rebalance {
+        google.protobuf.StringValue group_strategies = 1;
+      }
+      Rebalance rebalance = 1;
+    }
+    message Offset {
+      google.protobuf.Int64Value initial = 1;
+    }
+    google.protobuf.StringValue group_id = 1;
+    Group                       group    = 2;
+    Offset                      offset   = 3;
+  }
+
+  message Sender {
+    message RequiredAcks {
+      google.protobuf.Int32Value value = 1;
+    }
+    message Retry {
+      google.protobuf.Int64Value max               = 1; // The total number of times to retry sending a message (default 3).
+      google.protobuf.Duration   backoff           = 2; // How long to wait for the cluster to settle between retries (default 100ms).
+      google.protobuf.Int64Value max_buffer_length = 3; // The maximum length of the bridging buffer between `input` and `retries` channels in AsyncProducer#retryHandler.
+      google.protobuf.Int64Value max_buffer_bytes  = 4; // The maximum total byte size of messages in the bridging buffer between `input` and `retries` channels in AsyncProducer#retryHandler.
+    }
+    message Return {
+      google.protobuf.BoolValue successes = 2;
+      google.protobuf.BoolValue errors    = 1;
+    }
+    google.protobuf.Int32Value required_acks = 1;
+    Retry                      retry         = 2; // 添加 Retry 消息
+    Return                     return        = 3;
+  }
+  Receiver                    receiver = 1;
+  Sender                      sender   = 2;
+  repeated string             brokers  = 3;
+  google.protobuf.StringValue topic    = 4;
+  google.protobuf.StringValue version  = 6;
+}
