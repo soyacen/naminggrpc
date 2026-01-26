@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: main  # 总是检出 main 分支而不是 tag
         
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -23,13 +25,7 @@ jobs:
       - name: Get release version
         id: get_version
         run: |
-          VERSION=${GITHUB_REF#refs/tags/}
-          if [[ "$VERSION" == "refs/tags/"* ]]; then
-            # 如果是从 release 事件触发，需要从 GITHUB_REF 获取
-            VERSION=$(echo $GITHUB_REF | sed 's|refs/tags/||')
-          else
-            VERSION=${{ github.event.release.tag_name }}
-          fi
+          VERSION=${{ github.event.release.tag_name }}
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "Release version: $VERSION"
           
