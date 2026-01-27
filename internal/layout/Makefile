@@ -21,16 +21,10 @@ grpc:
 	@echo "Compiling proto files using grpc.sh..."
 	@bash scripts/grpc.sh
 
-# Run grpc script to compile config proto files
+# Run config script to compile config proto files
 config:
-	@echo "Compiling config proto files..."
-	protoc \
-                --proto_path=. \
-                --proto_path=./third_party \
-                --go_out=. \
-                --go_opt=paths=source_relative \
-                config/*.proto
-
+	@echo "Compiling config proto files using config.sh..."
+	@bash scripts/config.sh
 
 # Run goose script to compile all proto files in api directory and subdirectories
 goose:

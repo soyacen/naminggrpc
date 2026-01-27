@@ -23,27 +23,6 @@ if ! command -v protoc-gen-goose &> /dev/null; then
     protoc-gen-goose --version
 fi
 
-# 获取脚本所在目录（项目根目录）
-PROJECT_ROOT_DIR=$(get_project_root_dir)
-
-# 切换到项目根目录
-cd "${PROJECT_ROOT_DIR}"
-
-echo "开始编译项目中所有的 proto 文件..."
-
-# 使用公共库函数查找 proto 文件（兼容方式）
-proto_files=()
-while IFS= read -r file; do
-    proto_files+=("$file")
-done < <(find_proto_files | grep -v "^[^/]* 个 proto 文件\|^没有找到")
-
-if [ ${#proto_files[@]} -eq 0 ]; then
-    echo "没有找到 .proto 文件"
-    exit 0
-fi
-
-echo "发现 ${#proto_files[@]} 个 proto 文件..."
-
 # 编译所有proto文件，使用项目根目录和third_party作为proto_path，这样导入路径可以正确解析
 echo "正在编译 proto 文件..."
 protoc \
@@ -53,6 +32,6 @@ protoc \
   --go_opt=paths=source_relative \
   --goose_out=. \
   --goose_opt=paths=source_relative \
-  "${proto_files[@]}"
+  api/*/*.proto
 
-echo "编译完成！生成的文件位于对应的 proto 文件所在目录。"
+echo "编译完成！"

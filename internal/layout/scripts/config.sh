@@ -20,8 +20,5 @@ protoc \
   --proto_path=./third_party \
   --go_out=. \
   --go_opt=paths=source_relative \
-  --go-grpc_out=. \
-  --go-grpc_opt=paths=source_relative \
   config/*.proto
-
-echo "编译完成！生成的文件位于对应的 proto 文件所在目录。"
+echo "编译完成！"
