@@ -11,7 +11,7 @@ import "third_party/grocer/redisx/config.proto";
 import "third_party/grocer/s3x/config.proto";
 option go_package = "github.com/soyacen/grocer/internal/layout/config;config";
 
-message CronJob {
+message Config {
   grocer.dbx.Config        db        = 1;
   grocer.esx.Config        es        = 2;
   grocer.jeagerx.Config    jeager    = 3;

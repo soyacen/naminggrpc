@@ -13,6 +13,13 @@ source "$(dirname "${BASH_SOURCE[0]}")/common_proto_lib.sh"
 # 检查并安装 protoc-gen-go 插件
 ensure_protoc_gen_go
 
+# 检查并安装 protoc-gen-gonfig 插件
+if ! command -v protoc-gen-gonfig &> /dev/null; then
+    echo "install protoc-gen-gonfig..."
+    go get github.com/soyacen/gonfig/cmd/protoc-gen-gonfig@latest
+    protoc-gen-gonfig --version
+fi
+
 # 编译所有proto文件，使用项目根目录和third_party作为proto_path，这样导入路径可以正确解析
 echo "正在编译 proto 文件..."
 protoc \
@@ -20,5 +27,7 @@ protoc \
   --proto_path=./third_party \
   --go_out=. \
   --go_opt=paths=source_relative \
+	--gonfig_out=. \
+	--gonfig_opt=paths=source_relative \
   config/*.proto
 echo "编译完成！"

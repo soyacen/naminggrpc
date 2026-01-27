@@ -30,7 +30,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type CronJob struct {
+type Config struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Db            *dbx.Config            `protobuf:"bytes,1,opt,name=db,proto3" json:"db,omitempty"`
 	Es            *esx.Config            `protobuf:"bytes,2,opt,name=es,proto3" json:"es,omitempty"`
@@ -45,20 +45,20 @@ type CronJob struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CronJob) Reset() {
-	*x = CronJob{}
+func (x *Config) Reset() {
+	*x = Config{}
 	mi := &file_config_config_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CronJob) String() string {
+func (x *Config) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CronJob) ProtoMessage() {}
+func (*Config) ProtoMessage() {}
 
-func (x *CronJob) ProtoReflect() protoreflect.Message {
+func (x *Config) ProtoReflect() protoreflect.Message {
 	mi := &file_config_config_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,68 +70,68 @@ func (x *CronJob) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CronJob.ProtoReflect.Descriptor instead.
-func (*CronJob) Descriptor() ([]byte, []int) {
+// Deprecated: Use Config.ProtoReflect.Descriptor instead.
+func (*Config) Descriptor() ([]byte, []int) {
 	return file_config_config_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CronJob) GetDb() *dbx.Config {
+func (x *Config) GetDb() *dbx.Config {
 	if x != nil {
 		return x.Db
 	}
 	return nil
 }
 
-func (x *CronJob) GetEs() *esx.Config {
+func (x *Config) GetEs() *esx.Config {
 	if x != nil {
 		return x.Es
 	}
 	return nil
 }
 
-func (x *CronJob) GetJeager() *jeagerx.Config {
+func (x *Config) GetJeager() *jeagerx.Config {
 	if x != nil {
 		return x.Jeager
 	}
 	return nil
 }
 
-func (x *CronJob) GetKafka() *kafkax.Config {
+func (x *Config) GetKafka() *kafkax.Config {
 	if x != nil {
 		return x.Kafka
 	}
 	return nil
 }
 
-func (x *CronJob) GetMongo() *mongox.Config {
+func (x *Config) GetMongo() *mongox.Config {
 	if x != nil {
 		return x.Mongo
 	}
 	return nil
 }
 
-func (x *CronJob) GetNacos() *nacosx.Config {
+func (x *Config) GetNacos() *nacosx.Config {
 	if x != nil {
 		return x.Nacos
 	}
 	return nil
 }
 
-func (x *CronJob) GetPyroscope() *pyroscopex.Config {
+func (x *Config) GetPyroscope() *pyroscopex.Config {
 	if x != nil {
 		return x.Pyroscope
 	}
 	return nil
 }
 
-func (x *CronJob) GetRedis() *redisx.Config {
+func (x *Config) GetRedis() *redisx.Config {
 	if x != nil {
 		return x.Redis
 	}
 	return nil
 }
 
-func (x *CronJob) GetS3() *s3x.Config {
+func (x *Config) GetS3() *s3x.Config {
 	if x != nil {
 		return x.S3
 	}
@@ -142,8 +142,8 @@ var File_config_config_proto protoreflect.FileDescriptor
 
 const file_config_config_proto_rawDesc = "" +
 	"\n" +
-	"\x13config/config.proto\x12\rgrocer.config\x1a#third_party/grocer/dbx/config.proto\x1a#third_party/grocer/esx/config.proto\x1a'third_party/grocer/jeagerx/config.proto\x1a&third_party/grocer/kafkax/config.proto\x1a&third_party/grocer/mongox/config.proto\x1a&third_party/grocer/nacosx/config.proto\x1a*third_party/grocer/pyroscopex/config.proto\x1a&third_party/grocer/redisx/config.proto\x1a#third_party/grocer/s3x/config.proto\"\x92\x03\n" +
-	"\aCronJob\x12\"\n" +
+	"\x13config/config.proto\x12\rgrocer.config\x1a#third_party/grocer/dbx/config.proto\x1a#third_party/grocer/esx/config.proto\x1a'third_party/grocer/jeagerx/config.proto\x1a&third_party/grocer/kafkax/config.proto\x1a&third_party/grocer/mongox/config.proto\x1a&third_party/grocer/nacosx/config.proto\x1a*third_party/grocer/pyroscopex/config.proto\x1a&third_party/grocer/redisx/config.proto\x1a#third_party/grocer/s3x/config.proto\"\x91\x03\n" +
+	"\x06Config\x12\"\n" +
 	"\x02db\x18\x01 \x01(\v2\x12.grocer.dbx.ConfigR\x02db\x12\"\n" +
 	"\x02es\x18\x02 \x01(\v2\x12.grocer.esx.ConfigR\x02es\x12.\n" +
 	"\x06jeager\x18\x03 \x01(\v2\x16.grocer.jeagerx.ConfigR\x06jeager\x12+\n" +
@@ -169,7 +169,7 @@ func file_config_config_proto_rawDescGZIP() []byte {
 
 var file_config_config_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_config_config_proto_goTypes = []any{
-	(*CronJob)(nil),           // 0: grocer.config.CronJob
+	(*Config)(nil),            // 0: grocer.config.Config
 	(*dbx.Config)(nil),        // 1: grocer.dbx.Config
 	(*esx.Config)(nil),        // 2: grocer.esx.Config
 	(*jeagerx.Config)(nil),    // 3: grocer.jeagerx.Config
@@ -181,15 +181,15 @@ var file_config_config_proto_goTypes = []any{
 	(*s3x.Config)(nil),        // 9: grocer.s3x.Config
 }
 var file_config_config_proto_depIdxs = []int32{
-	1, // 0: grocer.config.CronJob.db:type_name -> grocer.dbx.Config
-	2, // 1: grocer.config.CronJob.es:type_name -> grocer.esx.Config
-	3, // 2: grocer.config.CronJob.jeager:type_name -> grocer.jeagerx.Config
-	4, // 3: grocer.config.CronJob.kafka:type_name -> grocer.kafkax.Config
-	5, // 4: grocer.config.CronJob.mongo:type_name -> grocer.mongox.Config
-	6, // 5: grocer.config.CronJob.nacos:type_name -> grocer.nacosx.Config
-	7, // 6: grocer.config.CronJob.pyroscope:type_name -> grocer.pyroscopex.Config
-	8, // 7: grocer.config.CronJob.redis:type_name -> grocer.redisx.Config
-	9, // 8: grocer.config.CronJob.s3:type_name -> grocer.s3x.Config
+	1, // 0: grocer.config.Config.db:type_name -> grocer.dbx.Config
+	2, // 1: grocer.config.Config.es:type_name -> grocer.esx.Config
+	3, // 2: grocer.config.Config.jeager:type_name -> grocer.jeagerx.Config
+	4, // 3: grocer.config.Config.kafka:type_name -> grocer.kafkax.Config
+	5, // 4: grocer.config.Config.mongo:type_name -> grocer.mongox.Config
+	6, // 5: grocer.config.Config.nacos:type_name -> grocer.nacosx.Config
+	7, // 6: grocer.config.Config.pyroscope:type_name -> grocer.pyroscopex.Config
+	8, // 7: grocer.config.Config.redis:type_name -> grocer.redisx.Config
+	9, // 8: grocer.config.Config.s3:type_name -> grocer.s3x.Config
 	9, // [9:9] is the sub-list for method output_type
 	9, // [9:9] is the sub-list for method input_type
 	9, // [9:9] is the sub-list for extension type_name

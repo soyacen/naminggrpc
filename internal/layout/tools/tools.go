@@ -4,6 +4,7 @@ package tools
 
 import (
 	_ "github.com/soyacen/goose"
+	_ "github.com/soyacen/gonfig"
 	_ "github.com/soyacen/gox"
 	_ "github.com/soyacen/grocer/grocer"
 	_ "github.com/ugorji/go/codec"

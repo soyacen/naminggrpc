@@ -5,9 +5,10 @@ go 1.25.5
 require (
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/redis/go-redis/v9 v9.17.3
+	github.com/soyacen/gonfig v0.0.6
 	github.com/soyacen/goose v1.7.1
 	github.com/soyacen/gox v0.3.4
-	github.com/soyacen/grocer v0.0.15
+	github.com/soyacen/grocer v0.0.16
 	github.com/spf13/cobra v1.10.2
 	github.com/ugorji/go/codec v1.3.1
 	go.uber.org/fx v1.24.0
@@ -19,6 +20,7 @@ require (
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
+	github.com/BurntSushi/toml v1.5.0 // indirect
 	github.com/IBM/sarama v1.46.3 // indirect
 	github.com/alibabacloud-go/alibabacloud-gateway-pop v0.1.3 // indirect
 	github.com/alibabacloud-go/alibabacloud-gateway-spi v0.0.5 // indirect
@@ -102,6 +104,7 @@ require (
 	github.com/jcmturner/gokrb5/v8 v8.4.4 // indirect
 	github.com/jcmturner/rpc/v2 v2.0.3 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
+	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.18.3 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
@@ -154,4 +157,5 @@ require (
 	golang.org/x/time v0.14.0 // indirect
 	gopkg.in/ini.v1 v1.67.1 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
