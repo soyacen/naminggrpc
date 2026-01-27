@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/soyacen/gonfig/resource/nacos"
 	"github.com/soyacen/gox/errorx"
@@ -12,6 +13,7 @@ import (
 	"github.com/soyacen/grocer/internal/layout/internal/cronjob"
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
+	"google.golang.org/protobuf/types/known/durationpb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
@@ -25,7 +27,7 @@ var cronjobCmd = &cobra.Command{
 			IpAddr:    wrapperspb.String(os.Getenv("NACOS_CONFIG_IP")),
 			Port:      wrapperspb.UInt64(errorx.Ignore(strconv.ParseUint(os.Getenv("NACOS_CONFIG_PORT"), 10, 64))),
 			Namespace: wrapperspb.String(os.Getenv("NACOS_CONFIG_NAMESPACE")),
-			TimeoutMs: ,
+			TimeoutMs: durationpb.New(5 * time.Second),
 		})
 		if err != nil {
 			return err

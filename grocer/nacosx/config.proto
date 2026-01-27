@@ -42,7 +42,7 @@ message Options {
   google.protobuf.StringValue endpoint_context_path   = 27; // the address server endpoint contextPath
   google.protobuf.StringValue endpoint_query_params   = 28; // the address server endpoint query params
   google.protobuf.StringValue cluster_name            = 29; // the address server clusterName
-  google.protobuf.Duration    timeout_ms              = 30; // timeout for requesting Nacos server, default value is 10000ms
+  google.protobuf.Duration    timeout                 = 30; // timeout for requesting Nacos server, default value is 10000ms
   google.protobuf.Int64Value  beat_interval           = 31; // the time interval for sending beat to server, default value is 5000ms
   map<string, string>         app_conn_labels         = 32; // app conn labels
 }
