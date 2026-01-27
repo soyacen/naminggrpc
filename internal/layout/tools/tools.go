@@ -3,10 +3,9 @@
 package tools
 
 import (
-	_ "github.com/google/wire"
 	_ "github.com/soyacen/goose"
 	_ "github.com/soyacen/gox"
-	_ "github.com/soyacen/grocer"
+	_ "github.com/soyacen/grocer/grocer"
 	_ "github.com/ugorji/go/codec"
 	_ "google.golang.org/genproto/googleapis/api"
 	_ "google.golang.org/genproto/googleapis/api/annotations"

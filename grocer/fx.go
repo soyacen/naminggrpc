@@ -1,4 +1,4 @@
-package pkg
+package grocer
 
 import (
 	"github.com/soyacen/grocer/grocer/dbx"
@@ -12,7 +12,7 @@ import (
 )
 
 var Module = fx.Module(
-	"pkg",
+	"grocer",
 	dbx.Module,
 	esx.Module,
 	kafkax.Module,
