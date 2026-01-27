@@ -1,22 +1,27 @@
 package cmd
 
 import (
-	"context"
 	"os"
-	"os/signal"
-	"syscall"
 
+	"github.com/soyacen/grocer/internal/layout/config"
+	"github.com/soyacen/grocer/internal/layout/pkg/logx"
 	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
 	Use: "grocer",
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		ctx := cmd.Context()
+		logx.Init()
+		if err := config.LoadConfigFromNacos(ctx); err != nil {
+			return err
+		}
+		return nil
+	},
 }
 
 func Execute() {
-	ctx, cancelFunc := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer cancelFunc()
-	if err := rootCmd.ExecuteContext(ctx); err != nil {
+	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }

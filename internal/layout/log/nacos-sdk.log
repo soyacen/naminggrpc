@@ -1,0 +1,65 @@
+2026-01-27T18:10:17.584+0800	WARN	cache/disk_cache.go:193	read Config Content failed. cause file doesn't exist, file path: /Users/soyacen/Workspace/github.com/soyacen/grocer/internal/layout/cache/config/vibeme-micro.yaml@@DEFAULT_GROUP@@public_failover.
+2026-01-27T18:10:17.585+0800	INFO	rpc/rpc_client.go:157	init rpc client for name %!(EXTRA string=config-0-a0cef6d7-8165-40ce-abf5-d99862554994)
+2026-01-27T18:10:17.585+0800	INFO	rpc/rpc_client.go:166	get app conn labels from client config map[] 
+2026-01-27T18:10:17.585+0800	INFO	rpc/rpc_client.go:168	get app conn labels from env map[] 
+2026-01-27T18:10:17.585+0800	INFO	rpc/rpc_client.go:171	final app conn labels : map[] 
+2026-01-27T18:10:17.585+0800	INFO	rpc/rpc_client.go:327	[RpcClient.Start] config-0-a0cef6d7-8165-40ce-abf5-d99862554994 try to connect to server on start up, server: {serverIp:127.0.0.1 serverPort:8848 serverGrpcPort:9848}
+2026-01-27T18:10:17.585+0800	INFO	rpc/grpc_client.go:175	check tls config %!(EXTRA *constant.TLSConfig=&{false false false    })
+2026-01-27T18:10:17.585+0800	INFO	rpc/grpc_client.go:180	try to get tls config from env
+2026-01-27T18:10:17.585+0800	INFO	rpc/grpc_client.go:189	 tls config from env is not enable
+2026-01-27T18:10:17.587+0800	INFO	util/common.go:96	Local IP:192.168.20.51
+2026-01-27T18:10:17.695+0800	INFO	rpc/rpc_client.go:337	config-0-a0cef6d7-8165-40ce-abf5-d99862554994 success to connect to server {serverIp:127.0.0.1 serverPort:8848 serverGrpcPort:9848} on start up, connectionId=1769508617591_192.168.65.1_22271
+2026-01-27T18:10:17.695+0800	INFO	rpc/rpc_client.go:487	config-0-a0cef6d7-8165-40ce-abf5-d99862554994 notify connected event to listeners , connectionId=1769508617591_192.168.65.1_22271
+2026-01-27T18:10:17.695+0800	INFO	config_client/config_connection_event_listener.go:38	[ConfigConnectionEventListener] connect to config server for taskId: 0
+2026-01-27T18:10:41.307+0800	WARN	cache/disk_cache.go:193	read Config Content failed. cause file doesn't exist, file path: /Users/soyacen/Workspace/github.com/soyacen/grocer/internal/layout/cache/config/vibeme-micro.yaml@@DEFAULT_GROUP@@public_failover.
+2026-01-27T18:10:41.308+0800	INFO	rpc/rpc_client.go:157	init rpc client for name %!(EXTRA string=config-0-9e2d333e-400a-45b2-91c8-b29596a349de)
+2026-01-27T18:10:41.308+0800	INFO	rpc/rpc_client.go:166	get app conn labels from client config map[] 
+2026-01-27T18:10:41.308+0800	INFO	rpc/rpc_client.go:168	get app conn labels from env map[] 
+2026-01-27T18:10:41.308+0800	INFO	rpc/rpc_client.go:171	final app conn labels : map[] 
+2026-01-27T18:10:41.308+0800	INFO	rpc/rpc_client.go:327	[RpcClient.Start] config-0-9e2d333e-400a-45b2-91c8-b29596a349de try to connect to server on start up, server: {serverIp:127.0.0.1 serverPort:8848 serverGrpcPort:9848}
+2026-01-27T18:10:41.308+0800	INFO	rpc/grpc_client.go:175	check tls config %!(EXTRA *constant.TLSConfig=&{false false false    })
+2026-01-27T18:10:41.308+0800	INFO	rpc/grpc_client.go:180	try to get tls config from env
+2026-01-27T18:10:41.308+0800	INFO	rpc/grpc_client.go:189	 tls config from env is not enable
+2026-01-27T18:10:41.309+0800	INFO	util/common.go:96	Local IP:192.168.20.51
+2026-01-27T18:10:41.416+0800	INFO	rpc/rpc_client.go:337	config-0-9e2d333e-400a-45b2-91c8-b29596a349de success to connect to server {serverIp:127.0.0.1 serverPort:8848 serverGrpcPort:9848} on start up, connectionId=1769508641311_192.168.65.1_31475
+2026-01-27T18:10:41.416+0800	INFO	rpc/rpc_client.go:487	config-0-9e2d333e-400a-45b2-91c8-b29596a349de notify connected event to listeners , connectionId=1769508641311_192.168.65.1_31475
+2026-01-27T18:10:41.416+0800	INFO	config_client/config_connection_event_listener.go:38	[ConfigConnectionEventListener] connect to config server for taskId: 0
+2026-01-27T18:12:49.753+0800	WARN	cache/disk_cache.go:193	read Config Content failed. cause file doesn't exist, file path: /Users/soyacen/Workspace/github.com/soyacen/grocer/internal/layout/cache/config/vibeme-micro.yaml@@DEFAULT_GROUP@@public_failover.
+2026-01-27T18:12:49.753+0800	INFO	rpc/rpc_client.go:157	init rpc client for name %!(EXTRA string=config-0-0cf742c0-74f9-426c-84d9-4aa110a1435c)
+2026-01-27T18:12:49.754+0800	INFO	rpc/rpc_client.go:166	get app conn labels from client config map[] 
+2026-01-27T18:12:49.754+0800	INFO	rpc/rpc_client.go:168	get app conn labels from env map[] 
+2026-01-27T18:12:49.754+0800	INFO	rpc/rpc_client.go:171	final app conn labels : map[] 
+2026-01-27T18:12:49.754+0800	INFO	rpc/rpc_client.go:327	[RpcClient.Start] config-0-0cf742c0-74f9-426c-84d9-4aa110a1435c try to connect to server on start up, server: {serverIp:127.0.0.1 serverPort:8848 serverGrpcPort:9848}
+2026-01-27T18:12:49.754+0800	INFO	rpc/grpc_client.go:175	check tls config %!(EXTRA *constant.TLSConfig=&{false false false    })
+2026-01-27T18:12:49.754+0800	INFO	rpc/grpc_client.go:180	try to get tls config from env
+2026-01-27T18:12:49.754+0800	INFO	rpc/grpc_client.go:189	 tls config from env is not enable
+2026-01-27T18:12:49.755+0800	INFO	util/common.go:96	Local IP:192.168.20.51
+2026-01-27T18:12:49.865+0800	INFO	rpc/rpc_client.go:337	config-0-0cf742c0-74f9-426c-84d9-4aa110a1435c success to connect to server {serverIp:127.0.0.1 serverPort:8848 serverGrpcPort:9848} on start up, connectionId=1769508769760_192.168.65.1_21435
+2026-01-27T18:12:49.865+0800	INFO	rpc/rpc_client.go:487	config-0-0cf742c0-74f9-426c-84d9-4aa110a1435c notify connected event to listeners , connectionId=1769508769760_192.168.65.1_21435
+2026-01-27T18:12:49.865+0800	INFO	config_client/config_connection_event_listener.go:38	[ConfigConnectionEventListener] connect to config server for taskId: 0
+2026-01-27T18:13:35.171+0800	WARN	cache/disk_cache.go:193	read Config Content failed. cause file doesn't exist, file path: /Users/soyacen/Workspace/github.com/soyacen/grocer/internal/layout/cache/config/vibeme-micro.yaml@@DEFAULT_GROUP@@public_failover.
+2026-01-27T18:13:35.172+0800	INFO	rpc/rpc_client.go:157	init rpc client for name %!(EXTRA string=config-0-4550ada1-b352-45af-a06f-fce8568ffb26)
+2026-01-27T18:13:35.172+0800	INFO	rpc/rpc_client.go:166	get app conn labels from client config map[] 
+2026-01-27T18:13:35.172+0800	INFO	rpc/rpc_client.go:168	get app conn labels from env map[] 
+2026-01-27T18:13:35.172+0800	INFO	rpc/rpc_client.go:171	final app conn labels : map[] 
+2026-01-27T18:13:35.172+0800	INFO	rpc/rpc_client.go:327	[RpcClient.Start] config-0-4550ada1-b352-45af-a06f-fce8568ffb26 try to connect to server on start up, server: {serverIp:127.0.0.1 serverPort:8848 serverGrpcPort:9848}
+2026-01-27T18:13:35.172+0800	INFO	rpc/grpc_client.go:175	check tls config %!(EXTRA *constant.TLSConfig=&{false false false    })
+2026-01-27T18:13:35.172+0800	INFO	rpc/grpc_client.go:180	try to get tls config from env
+2026-01-27T18:13:35.172+0800	INFO	rpc/grpc_client.go:189	 tls config from env is not enable
+2026-01-27T18:13:35.173+0800	INFO	util/common.go:96	Local IP:192.168.20.51
+2026-01-27T18:13:35.290+0800	INFO	rpc/rpc_client.go:337	config-0-4550ada1-b352-45af-a06f-fce8568ffb26 success to connect to server {serverIp:127.0.0.1 serverPort:8848 serverGrpcPort:9848} on start up, connectionId=1769508815179_192.168.65.1_52160
+2026-01-27T18:13:35.290+0800	INFO	rpc/rpc_client.go:487	config-0-4550ada1-b352-45af-a06f-fce8568ffb26 notify connected event to listeners , connectionId=1769508815179_192.168.65.1_52160
+2026-01-27T18:13:35.290+0800	INFO	config_client/config_connection_event_listener.go:38	[ConfigConnectionEventListener] connect to config server for taskId: 0
+2026-01-27T18:14:31.960+0800	WARN	cache/disk_cache.go:193	read Config Content failed. cause file doesn't exist, file path: /Users/soyacen/Workspace/github.com/soyacen/grocer/internal/layout/cache/config/vibeme-micro.yaml@@DEFAULT_GROUP@@public_failover.
+2026-01-27T18:14:31.960+0800	INFO	rpc/rpc_client.go:157	init rpc client for name %!(EXTRA string=config-0-582b0bd9-216c-4cc4-a34b-ce49e5f1dd0a)
+2026-01-27T18:14:31.961+0800	INFO	rpc/rpc_client.go:166	get app conn labels from client config map[] 
+2026-01-27T18:14:31.961+0800	INFO	rpc/rpc_client.go:168	get app conn labels from env map[] 
+2026-01-27T18:14:31.961+0800	INFO	rpc/rpc_client.go:171	final app conn labels : map[] 
+2026-01-27T18:14:31.961+0800	INFO	rpc/rpc_client.go:327	[RpcClient.Start] config-0-582b0bd9-216c-4cc4-a34b-ce49e5f1dd0a try to connect to server on start up, server: {serverIp:127.0.0.1 serverPort:8848 serverGrpcPort:9848}
+2026-01-27T18:14:31.961+0800	INFO	rpc/grpc_client.go:175	check tls config %!(EXTRA *constant.TLSConfig=&{false false false    })
+2026-01-27T18:14:31.961+0800	INFO	rpc/grpc_client.go:180	try to get tls config from env
+2026-01-27T18:14:31.961+0800	INFO	rpc/grpc_client.go:189	 tls config from env is not enable
+2026-01-27T18:14:31.961+0800	INFO	util/common.go:96	Local IP:192.168.20.51
+2026-01-27T18:14:32.069+0800	INFO	rpc/rpc_client.go:337	config-0-582b0bd9-216c-4cc4-a34b-ce49e5f1dd0a success to connect to server {serverIp:127.0.0.1 serverPort:8848 serverGrpcPort:9848} on start up, connectionId=1769508871965_192.168.65.1_63412
+2026-01-27T18:14:32.069+0800	INFO	rpc/rpc_client.go:487	config-0-582b0bd9-216c-4cc4-a34b-ce49e5f1dd0a notify connected event to listeners , connectionId=1769508871965_192.168.65.1_63412
+2026-01-27T18:14:32.069+0800	INFO	config_client/config_connection_event_listener.go:38	[ConfigConnectionEventListener] connect to config server for taskId: 0

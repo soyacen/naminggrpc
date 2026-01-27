@@ -1,0 +1,32 @@
+db:
+  configs:
+    cronjob:
+      connMaxIdleTime: 600s
+      connMaxLifetime: 1800s
+      driverName: pgx
+      dsn: host=localhost port=5432 user=postgres password=postgres dbname=vibeme sslmode=disable
+      maxIdleConns: 5
+      maxOpenConns: 20
+      pingTimeout: 5s
+redis:
+  configs:
+    cronjob:
+      addrs:
+      - localhost:6379
+      connMaxIdleTime: 1920s
+      connMaxLifetime: 3600s
+      dialTimeout: 4s
+      enableMetrics: true
+      enableTracing: true
+      maxIdleConns: 64
+      maxRetries: 2
+      maxRetryBackoff: 0.512s
+      minIdleConns: 16
+      minRetryBackoff: 0.128s
+      password: "123456"
+      poolSize: 1280
+      poolTimeout: 4s
+      readBufferSize: 1024
+      readTimeout: 2s
+      writeBufferSize: 1024
+      writeTimeout: 2s
