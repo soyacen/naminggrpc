@@ -1,6 +1,7 @@
 package kafkax
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/IBM/sarama"
@@ -51,6 +52,9 @@ func NewReceivers(config *Config) *lazyload.Group[*kafka_sarama.Consumer] {
 			}
 			return NewReceiver(options)
 		},
+		Finalize: func(ctx context.Context, consumer *kafka_sarama.Consumer) error {
+			return consumer.Close(ctx)
+		},
 	}
 }
 
@@ -62,6 +66,9 @@ func NewSenders(config *Config) *lazyload.Group[*kafka_sarama.Sender] {
 				return nil, fmt.Errorf("kafka %s not found", key)
 			}
 			return NewSender(options)
+		},
+		Finalize: func(ctx context.Context, obj *kafka_sarama.Sender) error {
+			return obj.Close(ctx)
 		},
 	}
 }

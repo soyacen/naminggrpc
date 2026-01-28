@@ -1,18 +1,18 @@
-package esx
+package redisx
 
 import (
 	"context"
 
-	"github.com/elastic/go-elasticsearch/v8"
+	"github.com/redis/go-redis/v9"
 	"github.com/soyacen/gox/conc/lazyload"
 	"go.uber.org/fx"
 )
 
 var Module = fx.Module(
-	"esx",
+	"mongox",
 	fx.Provide(NewClients),
 	fx.Invoke(
-		func(lc fx.Lifecycle, g *lazyload.Group[*elasticsearch.Client]) {
+		func(lc fx.Lifecycle, g *lazyload.Group[redis.UniversalClient]) {
 			lc.Append(fx.StopHook(func(ctx context.Context) error {
 				return g.Close(ctx)
 			}))

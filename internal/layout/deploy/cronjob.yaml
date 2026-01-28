@@ -40,9 +40,12 @@ spec:
             imagePullPolicy: IfNotPresent  
             command: ["/app/app"]
             args: ["cronjob"]
+            envFrom:
+            - configMapRef:
+                name: nacos-config
             env:
-            - name: ENV
-              value: "production"
+            - name: RUN_ENV
+              value: "prod"
             - name: POD_NAME
               valueFrom:
                 fieldRef:
@@ -51,6 +54,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: DEPLOYMENT_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels.app
             resources:
               requests:
                 memory: "64Mi"
@@ -64,12 +71,4 @@ spec:
               capabilities:
                 drop:
                 - ALL
-            livenessProbe:
-              exec:
-                command:
-                - /bin/sh
-                - -c
-                - "echo alive"
-              initialDelaySeconds: 30
-              periodSeconds: 60
           dnsPolicy: ClusterFirst

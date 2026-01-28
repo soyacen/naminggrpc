@@ -2,6 +2,7 @@ package config
 
 import (
 	context "context"
+	"log/slog"
 	"os"
 	"strconv"
 
@@ -34,6 +35,7 @@ func IsProd() bool {
 
 func LoadConfigFromNacos(ctx context.Context) error {
 	if os.Getenv("NACOS_CONFIG_IP") == "" {
+		slog.Info("NACOS_CONFIG_IP is empty")
 		return nil
 	}
 	configClient, err := nacosx.NewConfigClient(&nacosx.Options{

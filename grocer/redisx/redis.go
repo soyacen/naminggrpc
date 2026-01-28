@@ -69,6 +69,9 @@ func NewClients(ctx context.Context, config *Config) *lazyload.Group[redis.Unive
 			}
 			return NewClient(ctx, options)
 		},
+		Finalize: func(ctx context.Context, obj redis.UniversalClient) error {
+			return obj.Close()
+		},
 	}
 }
 

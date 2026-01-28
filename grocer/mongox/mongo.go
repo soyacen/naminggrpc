@@ -35,6 +35,9 @@ func NewClients(ctx context.Context, config *Config) *lazyload.Group[*mongo.Clie
 			}
 			return NewClient(ctx, options)
 		},
+		Finalize: func(ctx context.Context, obj *mongo.Client) error {
+			return obj.Disconnect(ctx)
+		},
 	}
 }
 

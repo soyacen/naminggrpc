@@ -21,6 +21,9 @@ func NewDBs(ctx context.Context, config *Config) *lazyload.Group[*sql.DB] {
 			}
 			return NewDB(ctx, options)
 		},
+		Finalize: func(ctx context.Context, db *sql.DB) error {
+			return db.Close()
+		},
 	}
 }
 
@@ -62,6 +65,9 @@ func NewSqlxDBs(ctx context.Context, config *Config) *lazyload.Group[*sqlx.DB] {
 			}
 			return NewSqlxDB(ctx, options)
 		},
+		Finalize: func(ctx context.Context, db *sqlx.DB) error {
+			return db.Close()
+		},
 	}
 }
 
@@ -72,3 +78,4 @@ func NewSqlxDB(ctx context.Context, options *Options) (*sqlx.DB, error) {
 	}
 	return sqlx.NewDb(db, options.GetDriverName().GetValue()), nil
 }
+

@@ -29,6 +29,7 @@ var cronjobCmd = &cobra.Command{
 				fxlogger.UseContext(ctx)
 				return fxlogger
 			}),
+			fx.Invoke(RunCronjob),
 		)
 		return app.Start(ctx)
 	},
@@ -36,4 +37,9 @@ var cronjobCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(cronjobCmd)
+}
+
+func RunCronjob(lc fx.Lifecycle, s *cronjob.Service) {
+	lc.Append(fx.StartHook(s.Run))
+	lc.Append(fx)
 }

@@ -1,24 +1,23 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: layout-job # Job 资源本身的名称
+  name: layout-job
   namespace: default
   labels:
-    app: layout-job # Job 资源的标签
+    app: layout-job
   annotations:
     description: "一次性任务作业，用于执行特定任务"
 spec:
-  backoffLimit: 4  # 增加重试次数
-  ttlSecondsAfterFinished: 3600  # 作业完成一小时后自动清理
+  backoffLimit: 4 
+  ttlSecondsAfterFinished: 3600  
   template:
     metadata:
       labels:
-        app: layout-job # Pod 的标签
+        app: layout-job 
     spec:
-      automountServiceAccountToken: false  # 不自动挂载服务账户token
-      enableServiceLinks: false  # 不自动添加服务链接
-      restartPolicy: OnFailure   # 只有在失败时才重启
-      # 安全上下文
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      restartPolicy: OnFailure
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532
@@ -27,16 +26,13 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       imagePullSecrets:
-      - name: regcred  # 先创建这个 secret
+      - name: regcred
       containers:
-      - name: layout-job # 容器名称
+      - name: layout-job
         image: soyacen/layout:v0.0.1
-        # 显式指定镜像拉取策略
         imagePullPolicy: IfNotPresent
-        # 明确覆盖 ENTRYPOINT
         command: ["/app/app"]
         args: ["job"]
-        # 资源限制
         resources:
           requests:
             memory: "64Mi"
@@ -44,8 +40,12 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "100m"
-        # 环境变量
+        envFrom:
+        - configMapRef:
+            name: nacos-config
         env:
+        - name: ENV
+          value: "production"
         - name: POD_NAME
           valueFrom:
             fieldRef:
@@ -54,19 +54,14 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        # 安全上下文（容器级别）
+        - name: DEPLOYMENT_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels.app
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
           capabilities:
             drop:
               - ALL
-        livenessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - "echo alive"
-          initialDelaySeconds: 30
-          periodSeconds: 60
       dnsPolicy: ClusterFirst

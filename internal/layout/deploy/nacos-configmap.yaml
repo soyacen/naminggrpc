@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nacos-config
+  namespace: default
+data:
+  NACOS_CONFIG_IP: "127.0.0.1"
+  NACOS_CONFIG_PORT: "8848"
+  NACOS_CONFIG_NAMESPACE: "public"
+  NACOS_CONFIG_GROUP: "DEFAULT_GROUP"
+  NACOS_CONFIG_DATA_ID: "vibeme-micro.yaml"

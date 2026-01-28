@@ -1,6 +1,7 @@
 package esx
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -101,6 +102,9 @@ func NewClients(config *Config) *lazyload.Group[*elasticsearch.Client] {
 				return nil, fmt.Errorf("es %s not found", key)
 			}
 			return NewClient(options)
+		},
+		Finalize: func(ctx context.Context, client *elasticsearch.Client) error {
+			return client.Close(ctx)
 		},
 	}
 }

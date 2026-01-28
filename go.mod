@@ -15,7 +15,6 @@ require (
 	github.com/go-playground/form v3.1.4+incompatible
 	github.com/go-sql-driver/mysql v1.9.3
 	github.com/google/uuid v1.6.0
-	github.com/google/wire v0.7.0
 	github.com/grafana/pyroscope-go v1.2.7
 	github.com/jackc/pgx/v5 v5.8.0
 	github.com/jmoiron/sqlx v1.4.0
@@ -25,7 +24,7 @@ require (
 	github.com/redis/go-redis/extra/redisotel/v9 v9.17.3
 	github.com/redis/go-redis/v9 v9.17.3
 	github.com/sony/gobreaker v1.0.0
-	github.com/soyacen/gox v0.3.4
+	github.com/soyacen/gox v0.3.5
 	github.com/spf13/cast v1.10.0
 	github.com/spf13/cobra v1.10.2
 	go.mongodb.org/mongo-driver/v2 v2.4.2
