@@ -117,12 +117,12 @@ func initRun(_ *cobra.Command, _ []string) error {
 			data = bytes.ReplaceAll(data, []byte("grocer"), []byte(path.Base(dir)))
 			dst = strings.TrimSuffix(dst, "common.yaml")
 			for _, env := range envs {
-				data = bytes.ReplaceAll(data, []byte("prod"), []byte(env))
 				dir := filepath.Join(dst, env)
 				if err := os.MkdirAll(dir, 0o777); err != nil {
 					return errors.WithStack(err)
 				}
 				file := filepath.Join(dir, "values.yaml")
+				data := bytes.ReplaceAll(bytes.Clone(data), []byte("prod"), []byte(env))
 				if err := os.WriteFile(file, data, 0o666); err != nil {
 					return errors.WithStack(err)
 				}

@@ -21,7 +21,7 @@ var cronjobCmd = &cobra.Command{
 		if err := flag.IsValid(); err != nil {
 			return err
 		}
-		return cronjobRun(cmd, args, "cronjob")
+		return jobRun(cmd, args, "cronjob")
 	},
 }
 
@@ -32,7 +32,7 @@ func init() {
 	cronjobCmd.Flags().StringVarP(&flag.Dir, "dir", "d", "", "project directory, default is current directory")
 }
 
-func cronjobRun(_ *cobra.Command, _ []string, kind string) error {
+func jobRun(_ *cobra.Command, _ []string, kind string) error {
 	srcMod, srcModVers, err := getSrcModInfo()
 	if err != nil {
 		return err
@@ -116,12 +116,16 @@ func cronjobRun(_ *cobra.Command, _ []string, kind string) error {
 		switch rel {
 		case "deploy/values/" + kind + ".yaml":
 			data = bytes.ReplaceAll(data, []byte("grocer-"+kind), []byte(path.Base(dstMod)+"-"+flag.Name))
-			dst = strings.TrimSuffix(dst, ".yaml")
-			if err := os.MkdirAll(dst, 0o777); err != nil {
-				return errors.WithStack(err)
-			}
+			dst = strings.TrimSuffix(dst, flag.Name+".yaml")
 			for _, env := range envs {
-				_ = env
+				dir := filepath.Join(dst, env)
+				if err := os.MkdirAll(dir, 0o777); err != nil {
+					return errors.WithStack(err)
+				}
+				file := filepath.Join(dir, flag.Name+".yaml")
+				if err := os.WriteFile(file, data, 0o666); err != nil {
+					return errors.WithStack(err)
+				}
 			}
 			_ = data
 			return nil
