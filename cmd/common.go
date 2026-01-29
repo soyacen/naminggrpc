@@ -18,7 +18,7 @@ var envs = []string{"dev", "test", "pre", "prod"}
 
 func getSrcModInfo() (string, string, error) {
 	srcMod := "github.com/soyacen/grocer/internal/layout"
-	srcModVers := srcMod + "@latest"
+	srcModVers := srcMod + "@" + Version
 	srcMod, _, _ = strings.Cut(srcMod, "@")
 	if err := module.CheckPath(srcMod); err != nil {
 		return "", "", errors.Wrap(err, "invalid source module name")

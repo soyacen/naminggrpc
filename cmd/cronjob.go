@@ -55,9 +55,9 @@ func jobRun(_ *cobra.Command, _ []string, kind string) error {
 	}
 
 	files := []string{
-		dir + "/cmd/" + flag.Name + ".go",
-		dir + "/deploy/values/" + flag.Name + ".yaml",
-		dir + "/internal/" + flag.Name,
+		dir + "/cmd/" + kind + "/" + flag.Name + ".go",
+		dir + "/deploy/values/" + kind + "/" + flag.Name + ".yaml",
+		dir + "/internal/" + kind + "/" + flag.Name,
 	}
 
 	// 检查所有可能的目标路径是否已存在
@@ -100,7 +100,7 @@ func jobRun(_ *cobra.Command, _ []string, kind string) error {
 		if !matched {
 			return nil
 		}
-		dst := strings.Replace(filepath.Join(dir, rel), kind, flag.Name, 1)
+		dst := filepath.Join(dir, rel)
 		if d.IsDir() {
 			if err := os.MkdirAll(dst, 0o777); err != nil {
 				return errors.WithStack(err)
@@ -115,26 +115,31 @@ func jobRun(_ *cobra.Command, _ []string, kind string) error {
 
 		switch rel {
 		case "deploy/values/" + kind + ".yaml":
+			dst := filepath.Join(dir, "deploy", "values", kind, flag.Name)
+			if err := os.MkdirAll(dst, 0o777); err != nil {
+				return errors.WithStack(err)
+			}
 			data = bytes.ReplaceAll(data, []byte("grocer-"+kind), []byte(path.Base(dstMod)+"-"+flag.Name))
-			dst = strings.TrimSuffix(dst, flag.Name+".yaml")
 			for _, env := range envs {
-				dir := filepath.Join(dst, env)
-				if err := os.MkdirAll(dir, 0o777); err != nil {
-					return errors.WithStack(err)
-				}
-				file := filepath.Join(dir, flag.Name+".yaml")
+				file := filepath.Join(dst, env+".yaml")
 				if err := os.WriteFile(file, data, 0o666); err != nil {
 					return errors.WithStack(err)
 				}
 			}
-			_ = data
 			return nil
-		case "cmd/" + kind + ".go",
-			"internal/" + kind + "/fx.go",
+		case "cmd/" + kind + ".go":
+			dst = filepath.Join(dir, "cmd", kind+"_"+flag.Name+".go")
+			data = bytes.ReplaceAll(data, []byte(kind), []byte(flag.Name))
+		case "internal/" + kind + "/fx.go",
 			"internal/" + kind + "/model.go",
 			"internal/" + kind + "/repo.go",
 			"internal/" + kind + "/repository.go",
 			"internal/" + kind + "/service.go":
+			dst = filepath.Join(dir, "internal", flag.Name)
+			if err := os.MkdirAll(dst, 0o777); err != nil {
+				return errors.WithStack(err)
+			}
+			dst = filepath.Join(dst, filepath.Base(rel))
 			data = bytes.ReplaceAll(data, []byte(kind), []byte(flag.Name))
 		}
 		if err != nil {
