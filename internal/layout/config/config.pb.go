@@ -16,6 +16,7 @@ import (
 	pyroscopex "github.com/soyacen/grocer/grocer/pyroscopex"
 	redisx "github.com/soyacen/grocer/grocer/redisx"
 	s3x "github.com/soyacen/grocer/grocer/s3x"
+	temporalx "github.com/soyacen/grocer/grocer/temporalx"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -41,6 +42,7 @@ type Config struct {
 	Pyroscope     *pyroscopex.Config     `protobuf:"bytes,8,opt,name=pyroscope,proto3" json:"pyroscope,omitempty"`
 	Redis         *redisx.Config         `protobuf:"bytes,9,opt,name=redis,proto3" json:"redis,omitempty"`
 	S3            *s3x.Config            `protobuf:"bytes,10,opt,name=s3,proto3" json:"s3,omitempty"`
+	Temporal      *temporalx.Config      `protobuf:"bytes,11,opt,name=temporal,proto3" json:"temporal,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -138,11 +140,18 @@ func (x *Config) GetS3() *s3x.Config {
 	return nil
 }
 
+func (x *Config) GetTemporal() *temporalx.Config {
+	if x != nil {
+		return x.Temporal
+	}
+	return nil
+}
+
 var File_config_config_proto protoreflect.FileDescriptor
 
 const file_config_config_proto_rawDesc = "" +
 	"\n" +
-	"\x13config/config.proto\x12\rgrocer.config\x1a#third_party/grocer/dbx/config.proto\x1a#third_party/grocer/esx/config.proto\x1a'third_party/grocer/jeagerx/config.proto\x1a&third_party/grocer/kafkax/config.proto\x1a&third_party/grocer/mongox/config.proto\x1a&third_party/grocer/nacosx/config.proto\x1a*third_party/grocer/pyroscopex/config.proto\x1a&third_party/grocer/redisx/config.proto\x1a#third_party/grocer/s3x/config.proto\"\x91\x03\n" +
+	"\x13config/config.proto\x12\rgrocer.config\x1a#third_party/grocer/dbx/config.proto\x1a#third_party/grocer/esx/config.proto\x1a'third_party/grocer/jeagerx/config.proto\x1a&third_party/grocer/kafkax/config.proto\x1a&third_party/grocer/mongox/config.proto\x1a&third_party/grocer/nacosx/config.proto\x1a*third_party/grocer/pyroscopex/config.proto\x1a&third_party/grocer/redisx/config.proto\x1a#third_party/grocer/s3x/config.proto\x1a)third_party/grocer/temporalx/config.proto\"\xc7\x03\n" +
 	"\x06Config\x12\"\n" +
 	"\x02db\x18\x01 \x01(\v2\x12.grocer.dbx.ConfigR\x02db\x12\"\n" +
 	"\x02es\x18\x02 \x01(\v2\x12.grocer.esx.ConfigR\x02es\x12.\n" +
@@ -153,7 +162,8 @@ const file_config_config_proto_rawDesc = "" +
 	"\tpyroscope\x18\b \x01(\v2\x19.grocer.pyroscopex.ConfigR\tpyroscope\x12+\n" +
 	"\x05redis\x18\t \x01(\v2\x15.grocer.redisx.ConfigR\x05redis\x12\"\n" +
 	"\x02s3\x18\n" +
-	" \x01(\v2\x12.grocer.s3x.ConfigR\x02s3B9Z7github.com/soyacen/grocer/internal/layout/config;configb\x06proto3"
+	" \x01(\v2\x12.grocer.s3x.ConfigR\x02s3\x124\n" +
+	"\btemporal\x18\v \x01(\v2\x18.grocer.temporalx.ConfigR\btemporalB9Z7github.com/soyacen/grocer/internal/layout/config;configb\x06proto3"
 
 var (
 	file_config_config_proto_rawDescOnce sync.Once
@@ -179,22 +189,24 @@ var file_config_config_proto_goTypes = []any{
 	(*pyroscopex.Config)(nil), // 7: grocer.pyroscopex.Config
 	(*redisx.Config)(nil),     // 8: grocer.redisx.Config
 	(*s3x.Config)(nil),        // 9: grocer.s3x.Config
+	(*temporalx.Config)(nil),  // 10: grocer.temporalx.Config
 }
 var file_config_config_proto_depIdxs = []int32{
-	1, // 0: grocer.config.Config.db:type_name -> grocer.dbx.Config
-	2, // 1: grocer.config.Config.es:type_name -> grocer.esx.Config
-	3, // 2: grocer.config.Config.jeager:type_name -> grocer.jeagerx.Config
-	4, // 3: grocer.config.Config.kafka:type_name -> grocer.kafkax.Config
-	5, // 4: grocer.config.Config.mongo:type_name -> grocer.mongox.Config
-	6, // 5: grocer.config.Config.nacos:type_name -> grocer.nacosx.Config
-	7, // 6: grocer.config.Config.pyroscope:type_name -> grocer.pyroscopex.Config
-	8, // 7: grocer.config.Config.redis:type_name -> grocer.redisx.Config
-	9, // 8: grocer.config.Config.s3:type_name -> grocer.s3x.Config
-	9, // [9:9] is the sub-list for method output_type
-	9, // [9:9] is the sub-list for method input_type
-	9, // [9:9] is the sub-list for extension type_name
-	9, // [9:9] is the sub-list for extension extendee
-	0, // [0:9] is the sub-list for field type_name
+	1,  // 0: grocer.config.Config.db:type_name -> grocer.dbx.Config
+	2,  // 1: grocer.config.Config.es:type_name -> grocer.esx.Config
+	3,  // 2: grocer.config.Config.jeager:type_name -> grocer.jeagerx.Config
+	4,  // 3: grocer.config.Config.kafka:type_name -> grocer.kafkax.Config
+	5,  // 4: grocer.config.Config.mongo:type_name -> grocer.mongox.Config
+	6,  // 5: grocer.config.Config.nacos:type_name -> grocer.nacosx.Config
+	7,  // 6: grocer.config.Config.pyroscope:type_name -> grocer.pyroscopex.Config
+	8,  // 7: grocer.config.Config.redis:type_name -> grocer.redisx.Config
+	9,  // 8: grocer.config.Config.s3:type_name -> grocer.s3x.Config
+	10, // 9: grocer.config.Config.temporal:type_name -> grocer.temporalx.Config
+	10, // [10:10] is the sub-list for method output_type
+	10, // [10:10] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_config_config_proto_init() }

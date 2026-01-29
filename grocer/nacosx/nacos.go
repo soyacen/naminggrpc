@@ -39,8 +39,8 @@ func (options *Options) AsNacosClientParam() vo.NacosClientParam {
 
 	clientConfig := constant.NewClientConfig()
 	// 设置客户端配置
-	if options.GetTimeoutMs() != nil {
-		clientConfig.TimeoutMs = uint64(options.GetTimeoutMs().AsDuration() / time.Millisecond)
+	if options.GetTimeout() != nil {
+		clientConfig.TimeoutMs = uint64(options.GetTimeout().AsDuration() / time.Millisecond)
 	}
 	if options.GetBeatInterval() != nil {
 		clientConfig.BeatInterval = options.GetBeatInterval().GetValue()

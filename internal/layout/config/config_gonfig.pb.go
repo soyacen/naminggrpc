@@ -15,6 +15,7 @@ import (
 	pyroscopex "github.com/soyacen/grocer/grocer/pyroscopex"
 	redisx "github.com/soyacen/grocer/grocer/redisx"
 	s3x "github.com/soyacen/grocer/grocer/s3x"
+	temporalx "github.com/soyacen/grocer/grocer/temporalx"
 	proto "google.golang.org/protobuf/proto"
 	atomic "sync/atomic"
 )
@@ -82,4 +83,8 @@ func GetRedis() *redisx.Config {
 
 func GetS3() *s3x.Config {
 	return proto.Clone(_Config.Load().(*Config).GetS3()).(*s3x.Config)
+}
+
+func GetTemporal() *temporalx.Config {
+	return proto.Clone(_Config.Load().(*Config).GetTemporal()).(*temporalx.Config)
 }

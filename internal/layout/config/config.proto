@@ -9,6 +9,8 @@ import "third_party/grocer/nacosx/config.proto";
 import "third_party/grocer/pyroscopex/config.proto";
 import "third_party/grocer/redisx/config.proto";
 import "third_party/grocer/s3x/config.proto";
+import "third_party/grocer/temporalx/config.proto";
+
 option go_package = "github.com/soyacen/grocer/internal/layout/config;config";
 
 message Config {
@@ -21,4 +23,5 @@ message Config {
   grocer.pyroscopex.Config pyroscope = 8;
   grocer.redisx.Config     redis     = 9;
   grocer.s3x.Config        s3        = 10;
+  grocer.temporalx.Config  temporal  = 11;
 }
