@@ -100,35 +100,34 @@ func jobRun(_ *cobra.Command, _ []string, kind string) error {
 		if !matched {
 			return nil
 		}
-		dst := filepath.Join(dir, rel)
 		if d.IsDir() {
-			if err := os.MkdirAll(dst, 0o777); err != nil {
-				return errors.WithStack(err)
-			}
 			return nil
 		}
-
 		data, err := os.ReadFile(src)
 		if err != nil {
 			return errors.WithStack(err)
 		}
-
+		var dst string
 		switch rel {
 		case "deploy/values/" + kind + ".yaml":
-			dst := filepath.Join(dir, "deploy", "values", kind, flag.Name)
+			dst = filepath.Join(dir, "deploy", "values", kind, flag.Name)
 			if err := os.MkdirAll(dst, 0o777); err != nil {
-				return errors.WithStack(err)
+				return errors.Wrap(err, "failed to create directory")
 			}
 			data = bytes.ReplaceAll(data, []byte("grocer-"+kind), []byte(path.Base(dstMod)+"-"+flag.Name))
 			for _, env := range envs {
 				file := filepath.Join(dst, env+".yaml")
 				if err := os.WriteFile(file, data, 0o666); err != nil {
-					return errors.WithStack(err)
+					return errors.Wrapf(err, "failed to write yaml file, %s", dst)
 				}
 			}
 			return nil
 		case "cmd/" + kind + ".go":
-			dst = filepath.Join(dir, "cmd", kind+"_"+flag.Name+".go")
+			dst = filepath.Join(dir, "cmd")
+			if err := os.MkdirAll(dst, 0o777); err != nil {
+				return errors.Wrap(err, "failed to create directory")
+			}
+			dst = filepath.Join(dst, kind+"_"+flag.Name+".go")
 			data = bytes.ReplaceAll(data, []byte(kind), []byte(flag.Name))
 		case "internal/" + kind + "/" + kind + "/fx.go",
 			"internal/" + kind + "/" + kind + "/model.go",
@@ -137,7 +136,7 @@ func jobRun(_ *cobra.Command, _ []string, kind string) error {
 			"internal/" + kind + "/" + kind + "/service.go":
 			dst = filepath.Join(dir, "internal", kind, flag.Name)
 			if err := os.MkdirAll(dst, 0o777); err != nil {
-				return errors.WithStack(err)
+				return errors.Wrap(err, "failed to create directory")
 			}
 			dst = filepath.Join(dst, filepath.Base(rel))
 			data = bytes.ReplaceAll(data, []byte(kind), []byte(flag.Name))
@@ -153,7 +152,7 @@ func jobRun(_ *cobra.Command, _ []string, kind string) error {
 			}
 		}
 		if err := os.WriteFile(dst, data, 0o666); err != nil {
-			return errors.WithStack(err)
+			return errors.Wrapf(err, "failed to write go file, %s, %s", dst, rel)
 		}
 		return nil
 	}); err != nil {
