@@ -47,7 +47,6 @@ jobs:
           sed -i "s|github.com/soyacen/grocer v[0-9]\+\.[0-9]\+\.[0-9]\+|github.com/soyacen/grocer $VERSION|g" internal/layout/go.mod
           echo "Updated versions in internal/layout/go.mod to $VERSION"
           sed -i "s|github.com/soyacen/grocer v[0-9]\+\.[0-9]\+\.[0-9]\+|github.com/soyacen/grocer $VERSION|g" internal/layout/go.mod
-          cd internal/layout && go mod tidy
 
       - name: Commit and push changes directly
         run: |
