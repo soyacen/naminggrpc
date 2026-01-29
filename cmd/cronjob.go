@@ -8,9 +8,11 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/cockroachdb/errors"
+	"github.com/soyacen/gox/stringx"
 	"github.com/spf13/cobra"
 )
 
@@ -128,7 +130,11 @@ func jobRun(_ *cobra.Command, _ []string, kind string) error {
 				return errors.Wrap(err, "failed to create directory")
 			}
 			dst = filepath.Join(dst, kind+"_"+flag.Name+".go")
-			data = bytes.ReplaceAll(data, []byte(kind), []byte(flag.Name))
+			data = bytes.ReplaceAll(data, []byte(kind+"/"+kind), []byte(kind+"/"+flag.Name))
+			data = bytes.ReplaceAll(data, []byte(kind+".Module"), []byte(flag.Name+".Module"))
+			data = bytes.ReplaceAll(data, []byte(kind+".Service"), []byte(flag.Name+".Service"))
+			data = bytes.ReplaceAll(data, []byte(strconv.Quote(kind)), []byte(strconv.Quote(flag.Name)))
+			data = bytes.ReplaceAll(data, []byte("cronjobCmd"), []byte(stringx.JSONCamelCase(flag.Name)+"Cmd"))
 		case "internal/" + kind + "/" + kind + "/fx.go",
 			"internal/" + kind + "/" + kind + "/model.go",
 			"internal/" + kind + "/" + kind + "/repo.go",

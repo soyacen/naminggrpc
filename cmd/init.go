@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bytes"
-	"go/ast"
 	"go/parser"
 	"go/token"
 	"io/fs"
@@ -148,66 +147,6 @@ func initRun(_ *cobra.Command, _ []string) error {
 
 	log.Printf("initialized %s in %s", initFlag.Mod, dir)
 	return nil
-}
-
-func fixMakefile(data []byte, dir string) []byte {
-	return bytes.ReplaceAll(data, []byte("grocer"), []byte(path.Base(dir)))
-}
-
-func fixCmdRootGo(data []byte, dir string) ([]byte, error) {
-	fset := token.NewFileSet()
-	f, err := parser.ParseFile(fset, "cmd/root.go", data, parser.ParseComments)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse source module")
-	}
-
-	buf := edit.NewBuffer(data)
-
-	// 遍历 AST 查找 rootCmd 变量的 Use 字段
-	ast.Inspect(f, func(n ast.Node) bool {
-		x, ok := n.(*ast.CompositeLit)
-		if !ok {
-			return true
-		}
-
-		sel, ok := x.Type.(*ast.SelectorExpr)
-		if !ok {
-			return true
-		}
-
-		ident, ok := sel.X.(*ast.Ident)
-		if !ok || ident.Name != "cobra" || sel.Sel.Name != "Command" {
-			return true
-		}
-
-		// 遍历结构体字段
-		for _, elt := range x.Elts {
-			kv, ok := elt.(*ast.KeyValueExpr)
-			if !ok {
-				continue
-			}
-
-			key, ok := kv.Key.(*ast.Ident)
-			if !ok || key.Name != "Use" {
-				continue
-			}
-
-			val, ok := kv.Value.(*ast.BasicLit)
-			if !ok || val.Kind != token.STRING {
-				continue
-			}
-
-			oldVal, _ := strconv.Unquote(val.Value)
-			newVal := strings.Replace(oldVal, "grocer", path.Base(dir), -1)
-			if newVal != oldVal {
-				buf.Replace(fset.Position(kv.Value.Pos()).Offset, fset.Position(kv.Value.End()).Offset,
-					strconv.Quote(newVal))
-			}
-		}
-		return true
-	})
-
-	return buf.Bytes(), nil
 }
 
 func fixGo(data []byte, file string, srcMod, dstMod string, isRoot bool) ([]byte, error) {

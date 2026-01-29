@@ -42,6 +42,11 @@ jobs:
         run: |
           # 替换 cmd/version.go 文件中的版本号
           sed -i "s/var Version = \".*\"/var Version = \"$VERSION\"/" cmd/version.go
+
+          # 更新 internal/layout/go.mod 文件中的版本
+          sed -i "s|github.com/soyacen/grocer v[0-9]\+\.[0-9]\+\.[0-9]\+|github.com/soyacen/grocer $VERSION|g" internal/layout/go.mod
+          echo "Updated versions in internal/layout/go.mod to $VERSION"
+
       - name: Commit and push changes directly
         run: |
           git config --local user.email "action@github.com"
