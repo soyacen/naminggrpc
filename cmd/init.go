@@ -114,16 +114,15 @@ func initRun(_ *cobra.Command, _ []string) error {
 		case "Makefile":
 			data = bytes.ReplaceAll(data, []byte("grocer"), []byte(path.Base(dir)))
 		case "deploy/values/common.yaml":
+			dst := filepath.Join(dir, "deploy/values/common")
+			if err := os.MkdirAll(dst, 0o777); err != nil {
+				return errors.WithStack(err)
+			}
 			data = bytes.ReplaceAll(data, []byte("grocer"), []byte(path.Base(dir)))
-			dst = strings.TrimSuffix(dst, "common.yaml")
 			for _, env := range envs {
-				dir := filepath.Join(dst, env)
-				if err := os.MkdirAll(dir, 0o777); err != nil {
-					return errors.WithStack(err)
-				}
-				file := filepath.Join(dir, "values.yaml")
+				dst := filepath.Join(dir, "deploy/values/common", env+".yaml")
 				data := bytes.ReplaceAll(bytes.Clone(data), []byte("prod"), []byte(env))
-				if err := os.WriteFile(file, data, 0o666); err != nil {
+				if err := os.WriteFile(dst, data, 0o666); err != nil {
 					return errors.WithStack(err)
 				}
 			}

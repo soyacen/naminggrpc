@@ -130,12 +130,12 @@ func jobRun(_ *cobra.Command, _ []string, kind string) error {
 		case "cmd/" + kind + ".go":
 			dst = filepath.Join(dir, "cmd", kind+"_"+flag.Name+".go")
 			data = bytes.ReplaceAll(data, []byte(kind), []byte(flag.Name))
-		case "internal/" + kind + "/fx.go",
-			"internal/" + kind + "/model.go",
-			"internal/" + kind + "/repo.go",
-			"internal/" + kind + "/repository.go",
-			"internal/" + kind + "/service.go":
-			dst = filepath.Join(dir, "internal", flag.Name)
+		case "internal/" + kind + "/" + kind + "/fx.go",
+			"internal/" + kind + "/" + kind + "/model.go",
+			"internal/" + kind + "/" + kind + "/repo.go",
+			"internal/" + kind + "/" + kind + "/repository.go",
+			"internal/" + kind + "/" + kind + "/service.go":
+			dst = filepath.Join(dir, "internal", kind, flag.Name)
 			if err := os.MkdirAll(dst, 0o777); err != nil {
 				return errors.WithStack(err)
 			}
