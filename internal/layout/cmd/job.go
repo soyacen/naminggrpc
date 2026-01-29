@@ -12,7 +12,7 @@ import (
 	"go.uber.org/fx/fxevent"
 )
 
-var scriptCmd = &cobra.Command{
+var jobCmd = &cobra.Command{
 	Use: "job",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := cmd.Context()
@@ -38,5 +38,5 @@ var scriptCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(scriptCmd)
+	rootCmd.AddCommand(jobCmd)
 }
