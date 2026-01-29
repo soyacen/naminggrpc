@@ -125,8 +125,6 @@ func (options *Options) AsNacosClientParam() vo.NacosClientParam {
 }
 
 func ParseDSN(rawURL *url.URL) (*Options, error) {
-
-
 	if rawURL.Scheme != Scheme || len(rawURL.Host) == 0 /*|| len(strings.TrimLeft(rawURL.Path, "/")) == 0*/ {
 		return nil, errors.Errorf("nacosx: malformed URL('%s'). Must be in the next format: 'nacos://host:port/service?param=value'", rawURL.String())
 	}
