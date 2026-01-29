@@ -108,7 +108,7 @@ func initRun(_ *cobra.Command, _ []string) error {
 
 		switch rel {
 		case "cmd/root.go":
-			data = bytes.ReplaceAll(data, []byte("grocer"), []byte(path.Base(dir)))
+			data = bytes.ReplaceAll(data, []byte(`"grocer"`), []byte(strconv.Quote(path.Base(dir))))
 		case "go.mod":
 			data, err = fixGoMod(data, initFlag.Mod)
 		case "Makefile":

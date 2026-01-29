@@ -57,6 +57,8 @@ jobs:
           echo "Version updated to $VERSION"
           echo ""
           echo "Now run the following commands to create and push the tag:"
+          echo "git tag internal/layout/$VERSION"
+          echo "git push origin internal/layout/$VERSION"
           echo "git tag $VERSION"
           echo "git push origin $VERSION"
           echo ""
