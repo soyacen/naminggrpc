@@ -46,12 +46,14 @@ jobs:
           # 更新 internal/layout/go.mod 文件中的版本
           sed -i "s|github.com/soyacen/grocer v[0-9]\+\.[0-9]\+\.[0-9]\+|github.com/soyacen/grocer $VERSION|g" internal/layout/go.mod
           echo "Updated versions in internal/layout/go.mod to $VERSION"
+          sed -i "s|github.com/soyacen/grocer v[0-9]\+\.[0-9]\+\.[0-9]\+|github.com/soyacen/grocer $VERSION|g" internal/layout/go.mod
 
       - name: Commit and push changes directly
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add cmd/version.go
+          git add internal/layout/go.mod
           git commit -m "chore: update version to $VERSION"
           git push
           
