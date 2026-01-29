@@ -9,7 +9,7 @@ require (
 	github.com/soyacen/gonfig/resource/nacos v0.0.8
 	github.com/soyacen/goose v1.7.3
 	github.com/soyacen/gox v0.3.6
-	github.com/soyacen/grocer v0.0.28
+	github.com/soyacen/grocer v0.0.29
 	github.com/spf13/cobra v1.10.2
 	github.com/ugorji/go/codec v1.3.1
 	go.uber.org/fx v1.24.0
