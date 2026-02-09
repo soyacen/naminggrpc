@@ -136,20 +136,6 @@ nacos://username:password@192.168.1.100:8848/my-service
 nacos://localhost:8848/my-service?namespace=dev&group=MY_GROUP&timeout=5000&weight=5.0&ephemeral=true&cluster=DEFAULT&meta.version=v1.0.0
 ```
 
-## 项目结构
-
-```
-naminggrpc/
-├── nacosgrpc/              # Nacos 实现
-│   ├── registrar.go        # 服务注册器实现
-│   ├── registrar_test.go   # 注册器测试
-│   ├── resolver.go         # 命名解析器实现
-│   └── resolver_test.go    # 解析器测试
-├── global.go               # 全局定义
-├── registrar.go            # 注册器接口定义
-└── go.mod                  # Go 模块文件
-```
-
 ## 接口设计
 
 ### Registrar 接口
@@ -187,7 +173,6 @@ go test ./nacosgrpc
 
 - [nacos-sdk-go/v2](https://github.com/nacos-group/nacos-sdk-go) - Nacos Go SDK
 - [grpc-go](https://github.com/grpc/grpc-go) - gRPC Go 实现
-- [cockroachdb/errors](https://github.com/cockroachdb/errors) - 错误处理库
 
 ## 许可证
 
