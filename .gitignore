@@ -1,2 +1,3 @@
 # Build binaries
 bin/
+.vscode/
