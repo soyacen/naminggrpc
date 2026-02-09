@@ -1,4 +1,4 @@
-// Package nacosgrpc 实现了基于 Nacos 的 gRPC 服务注册器
+// Package nacosgrpc provides gRPC service registration implementation based on Nacos
 package nacosgrpc
 
 import (
@@ -16,88 +16,90 @@ import (
 	"github.com/soyacen/naminggrpc"
 )
 
+// RegistrarDSNParser is the function variable for parsing registrar DSN
 var RegistrarDSNParser = parseRegistrarDSN
 
+// init registers the nacos factory with naminggrpc
 func init() {
-	naminggrpc.Register("nacos")
+	naminggrpc.Register("nacos", &Factory{})
 }
 
-// Registrar 是 Nacos 服务注册器结构体
+// Registrar represents the Nacos service registrar structure
 type Registrar struct {
-	namingClient    naming_client.INamingClient // Nacos 命名客户端
-	registerParam   vo.RegisterInstanceParam    // 注册实例参数
-	deregisterParam vo.DeregisterInstanceParam  // 注销实例参数
+	namingClient    naming_client.INamingClient // Nacos naming client
+	registerParam   vo.RegisterInstanceParam    // Registration instance parameters
+	deregisterParam vo.DeregisterInstanceParam  // Deregistration instance parameters
 }
 
-// Register 在 Nacos 中注册服务实例
-// 参数:
-//   - ctx: 上下文对象
+// Register registers a service instance in Nacos
+// Parameters:
+//   - ctx: context object
 //
-// 返回值:
-//   - error: 注册过程中的错误信息
+// Returns:
+//   - error: error information during registration
 func (r *Registrar) Register(ctx context.Context) error {
-	// 调用 Nacos 客户端注册实例
+	// Call Nacos client to register instance
 	ok, err := r.namingClient.RegisterInstance(r.registerParam)
 	if err != nil {
-		return errors.Wrapf(err, "naming: failed to register %s", r.registerParam.ServiceName)
+		return errors.Wrapf(err, "nacosgrpc: failed to register %s", r.registerParam.ServiceName)
 	}
 
-	// 检查注册是否成功
+	// Check if registration was successful
 	if !ok {
-		return errors.Errorf("naming: failed to register %s", r.registerParam.ServiceName)
+		return errors.Errorf("nacosgrpc: failed to register %s", r.registerParam.ServiceName)
 	}
 
 	return nil
 }
 
-// Deregister 从 Nacos 中注销服务实例
-// 参数:
-//   - ctx: 上下文对象
+// Deregister deregisters a service instance from Nacos
+// Parameters:
+//   - ctx: context object
 //
-// 返回值:
-//   - error: 注销过程中的错误信息
+// Returns:
+//   - error: error information during deregistration
 func (r *Registrar) Deregister(ctx context.Context) error {
-	// 调用 Nacos 客户端注销实例
+	// Call Nacos client to deregister instance
 	ok, err := r.namingClient.DeregisterInstance(r.deregisterParam)
 	if err != nil {
-		return errors.Wrapf(err, "naming: failed to deregister %s", r.deregisterParam.ServiceName)
+		return errors.Wrapf(err, "nacosgrpc: failed to deregister %s", r.deregisterParam.ServiceName)
 	}
 
-	// 检查注销是否成功
+	// Check if deregistration was successful
 	if !ok {
-		return errors.Errorf("naming: failed to deregister %s", r.deregisterParam.ServiceName)
+		return errors.Errorf("nacosgrpc: failed to deregister %s", r.deregisterParam.ServiceName)
 	}
 
 	return nil
 }
 
-// NewNacosRegistrar 创建新的 Nacos 服务注册器实例
-// 参数:
-//   - dsn: 数据源名称，格式为 nacos://[username[:password]@]host[:port]/service_name?param=value
+// NewRegistrar creates a new Nacos service registrar instance
+// Parameters:
+//   - dsn: data source name, format: nacos://[username[:password]@]host[:port]/service_name?param=value
 //
-// 返回值:
-//   - *Registrar: 注册器实例
-//   - error: 创建过程中的错误信息
+// Returns:
+//   - *Registrar: registrar instance
+//   - error: error information during creation
 func NewRegistrar(dsn string) (*Registrar, error) {
-	// 解析 DSN URL
+	// Parse DSN URL
 	u, err := url.Parse(dsn)
 	if err != nil {
-		return nil, errors.Wrapf(err, "naming: failed to parse dsn %s", dsn)
+		return nil, errors.Wrapf(err, "nacosgrpc: failed to parse dsn %s", dsn)
 	}
 
-	// 解析注册器 DSN 配置
+	// Parse registrar DSN configuration
 	parsed, err := RegistrarDSNParser(*u)
 	if err != nil {
 		return nil, err
 	}
 
-	// 创建 Nacos 命名客户端
+	// Create Nacos naming client
 	client, err := clients.NewNamingClient(parsed.clientParam)
 	if err != nil {
-		return nil, errors.Wrapf(err, "naming: failed to create naming client")
+		return nil, errors.Wrapf(err, "nacosgrpc: failed to create naming client")
 	}
 
-	// 返回注册器实例
+	// Return registrar instance
 	return &Registrar{
 		namingClient:    client,
 		registerParam:   parsed.registerParam,
@@ -105,51 +107,51 @@ func NewRegistrar(dsn string) (*Registrar, error) {
 	}, nil
 }
 
-// RegistrarDSN 包含注册器所需的配置信息
+// RegistrarDSN contains configuration information required by the registrar
 type RegistrarDSN struct {
-	clientParam     vo.NacosClientParam        // Nacos 客户端参数
-	registerParam   vo.RegisterInstanceParam   // 注册实例参数
-	deregisterParam vo.DeregisterInstanceParam // 注销实例参数
+	clientParam     vo.NacosClientParam        // Nacos client parameters
+	registerParam   vo.RegisterInstanceParam   // Registration instance parameters
+	deregisterParam vo.DeregisterInstanceParam // Deregistration instance parameters
 }
 
-// parseRegistrarDSN 解析注册器的 DSN 配置
-// 支持的 URL 格式: nacos://[username[:password]@]host[:port]/service_name?param=value
-// 参数:
-//   - u: URL 对象
+// parseRegistrarDSN parses the DSN configuration for the registrar
+// Supported URL format: nacos://[username[:password]@]host[:port]/service_name?param=value
+// Parameters:
+//   - u: URL object
 //
-// 返回值:
-//   - *nacosRegistrarDSN: 解析后的配置对象
-//   - error: 错误信息
+// Returns:
+//   - *RegistrarDSN: parsed configuration object
+//   - error: error information
 func parseRegistrarDSN(u url.URL) (*RegistrarDSN, error) {
-	// 解析主机和端口
+	// Parse host and port
 	host, portStr, err := net.SplitHostPort(u.Host)
 	if err != nil {
 		host = u.Host
-		portStr = "8848" // 默认 Nacos 端口
+		portStr = "8848" // Default Nacos port
 	}
 	port, _ := strconv.ParseUint(portStr, 10, 64)
 
-	// 解析查询参数
+	// Parse query parameters
 	q := u.Query()
 	namespace := q.Get("namespace")
 	if namespace == "" {
-		namespace = "public" // 默认命名空间
+		namespace = "public" // Default namespace
 	}
 
 	group := q.Get("group")
 	if group == "" {
-		group = "DEFAULT_GROUP" // 默认分组
+		group = "DEFAULT_GROUP" // Default group
 	}
 
-	// 解析超时时间
-	timeoutMs := uint64(10000) // 默认超时 10 秒
+	// Parse timeout
+	timeoutMs := uint64(10000) // Default timeout 10 seconds
 	if t := q.Get("timeout"); t != "" {
 		if tv, err := strconv.ParseUint(t, 10, 64); err == nil {
 			timeoutMs = tv
 		}
 	}
 
-	// 构造客户端配置
+	// Construct client configuration
 	clientConfig := constant.NewClientConfig()
 	clientConfig.Username = u.User.Username()
 	clientConfig.Password, _ = u.User.Password()
@@ -157,64 +159,67 @@ func parseRegistrarDSN(u url.URL) (*RegistrarDSN, error) {
 	clientConfig.TimeoutMs = timeoutMs
 	clientConfig.NotLoadCacheAtStart = true
 
-	// 构造服务器配置
+	// Construct server configuration
 	serverConfigs := []constant.ServerConfig{
 		*constant.NewServerConfig(host, port),
 	}
 
-	// 解析服务名称
+	// Parse service name
 	serviceName := strings.Trim(u.Path, "/")
 	if serviceName == "" {
-		return nil, errors.New("naming: service name is required in path")
+		return nil, errors.New("nacosgrpc: service name is required in path")
 	}
 
-	// 解析实例 IP 和端口
-	ip := q.Get("ip")
-	regPortStr := q.Get("port")
-	var regPort uint64
-	if regPortStr != "" {
-		regPort, _ = strconv.ParseUint(regPortStr, 10, 64)
+	// Parse instance IP and port
+	svcIP := q.Get("ip")
+	if svcIP == "" {
+		return nil, errors.New("nacosgrpc: service IP is required in query parameters")
+	}
+	svcPortStr := q.Get("port")
+	svcPort, err := strconv.ParseUint(svcPortStr, 10, 64)
+	if err != nil {
+		return nil, errors.New("nacosgrpc: invalid service port in query parameters")
 	}
 
-	// 解析权重配置
-	weight := 10.0 // 默认权重
+	// Parse weight configuration
+	weight := 10.0 // Default weight
 	if w := q.Get("weight"); w != "" {
 		if wv, err := strconv.ParseFloat(w, 64); err == nil {
 			weight = wv
 		}
 	}
 
-	// 解析临时实例配置
-	ephemeral := true // 默认为临时实例
+	// Parse ephemeral instance configuration
+	ephemeral := true // Default to ephemeral instance
 	if e := q.Get("ephemeral"); e != "" {
 		if ev, err := strconv.ParseBool(e); err == nil {
 			ephemeral = ev
 		}
 	}
 
-	// 解析集群名称和元数据
+	// Parse cluster name and metadata
 	cluster := q.Get("cluster")
 	metadata := make(map[string]string)
 
-	// 处理以 meta. 开头的元数据参数
+	// Process metadata parameters starting with meta.
 	for k, v := range q {
 		if strings.HasPrefix(k, "meta.") {
 			metadata[strings.TrimPrefix(k, "meta.")] = v[0]
 		}
 	}
 
-	// 返回解析结果
+	// Return parsed result
 	return &RegistrarDSN{
 		clientParam: vo.NacosClientParam{
 			ClientConfig:  clientConfig,
 			ServerConfigs: serverConfigs,
 		},
 		registerParam: vo.RegisterInstanceParam{
-			Ip:          ip,
-			Port:        regPort,
+			Ip:          svcIP,
+			Port:        svcPort,
 			Weight:      weight,
-			Enable:      true, // 默认启用
-			Healthy:     true, // 默认健康
+			Enable:      true, // Default enabled
+			Healthy:     true, // Default healthy
 			Metadata:    metadata,
 			ClusterName: cluster,
 			ServiceName: serviceName,
@@ -222,8 +227,8 @@ func parseRegistrarDSN(u url.URL) (*RegistrarDSN, error) {
 			Ephemeral:   ephemeral,
 		},
 		deregisterParam: vo.DeregisterInstanceParam{
-			Ip:          ip,
-			Port:        regPort,
+			Ip:          svcIP,
+			Port:        svcPort,
 			Cluster:     cluster,
 			ServiceName: serviceName,
 			GroupName:   group,
@@ -232,7 +237,17 @@ func parseRegistrarDSN(u url.URL) (*RegistrarDSN, error) {
 	}, nil
 }
 
+// Factory implements the registrar factory interface
 type Factory struct{}
 
+// New creates a new registrar instance
+// Parameters:
+//   - ctx: context object
+//   - dsn: data source name
+//
+// Returns:
+//   - naminggrpc.Registrar: registrar interface
+//   - error: error information
 func (f *Factory) New(ctx context.Context, dsn string) (naminggrpc.Registrar, error) {
+	return NewRegistrar(dsn)
 }
