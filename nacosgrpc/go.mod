@@ -7,7 +7,7 @@ replace github.com/soyacen/naminggrpc => ../
 require (
 	github.com/cockroachdb/errors v1.12.0
 	github.com/nacos-group/nacos-sdk-go/v2 v2.3.5
-	github.com/soyacen/naminggrpc v0.0.33
+	github.com/soyacen/naminggrpc v0.0.34
 	github.com/stretchr/testify v1.11.1
 	google.golang.org/grpc v1.78.0
 )
