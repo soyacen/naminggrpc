@@ -2,12 +2,12 @@ package nacosgrpc
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"net/url"
 	"strconv"
 	"strings"
 
-	"github.com/cockroachdb/errors"
 	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 )
@@ -26,7 +26,7 @@ var DefaultDsnParser DsnParser = ParseDsn
 func ParseDsn(ctx context.Context, kind string, dsn string) (*DSN, error) {
 	u, err := url.Parse(dsn)
 	if err != nil {
-		return nil, errors.Wrapf(err, "nacosgrpc: failed to parse dsn %s", dsn)
+		return nil, fmt.Errorf("nacosgrpc: failed to parse dsn %s", dsn)
 	}
 
 	// Parse host and port
@@ -78,7 +78,7 @@ func ParseDsn(ctx context.Context, kind string, dsn string) (*DSN, error) {
 	// Parse service name
 	serviceName := strings.Trim(u.Path, "/")
 	if serviceName == "" {
-		return nil, errors.New("nacosgrpc: service name is required in path")
+		return nil, fmt.Errorf("nacosgrpc: service name is required in path")
 	}
 
 	d := &DSN{
@@ -89,12 +89,12 @@ func ParseDsn(ctx context.Context, kind string, dsn string) (*DSN, error) {
 		// Parse instance IP and port
 		svcIP := q.Get("ip")
 		if svcIP == "" {
-			return nil, errors.New("nacosgrpc: service IP is required in query parameters")
+			return nil, fmt.Errorf("nacosgrpc: service IP is required in query parameters")
 		}
 		svcPortStr := q.Get("port")
 		svcPort, err := strconv.ParseUint(svcPortStr, 10, 64)
 		if err != nil {
-			return nil, errors.New("nacosgrpc: invalid service port in query parameters")
+			return nil, fmt.Errorf("nacosgrpc: invalid service port in query parameters")
 		}
 
 		// Parse weight configuration

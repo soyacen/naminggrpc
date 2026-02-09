@@ -8,12 +8,10 @@ import (
 	"slices"
 	"strconv"
 
-	"github.com/cockroachdb/errors"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/naming_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/model"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/attributes"
 	grpcresolver "google.golang.org/grpc/resolver"
 )
@@ -24,7 +22,6 @@ const scheme = "nacos"
 // init automatically registers the resolver builder when the package is imported
 func init() {
 	grpcresolver.Register(&Builder{})
-	grpc.Dial("", grpc.WithResolvers())
 }
 
 // Builder is the Builder structure for Nacos resolver
@@ -43,13 +40,13 @@ func (b *Builder) Build(tgt grpcresolver.Target, cc grpcresolver.ClientConn, opt
 	// Parse DSN configuration
 	parsed, err := DefaultDsnParser(context.Background(), "resolver", tgt.URL.String())
 	if err != nil {
-		return nil, errors.Wrapf(err, "naming: failed to parse dsn")
+		return nil, err
 	}
 
 	// Create Nacos naming client
 	client, err := clients.NewNamingClient(parsed.ClientParam)
 	if err != nil {
-		return nil, errors.Wrapf(err, "naming: failed to create naming client")
+		return nil, err
 	}
 
 	// Create resolver instance
@@ -91,7 +88,7 @@ func (r *resolver) start() error {
 		HealthyOnly: true,
 	})
 	if err != nil {
-		return errors.Wrapf(err, "naming: failed to select instances")
+		return err
 	}
 
 	// Update connection state
@@ -107,7 +104,7 @@ func (r *resolver) start() error {
 
 	// Subscribe to service changes
 	if err := r.namingClient.Subscribe(&r.param); err != nil {
-		return errors.Wrapf(err, "naming: failed to subscribe")
+		return err
 	}
 	return nil
 }

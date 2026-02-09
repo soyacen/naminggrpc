@@ -3,8 +3,8 @@ package nacosgrpc
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/cockroachdb/errors"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/naming_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
@@ -35,12 +35,12 @@ func (r *registrar) Register(ctx context.Context) error {
 	// Call Nacos client to register instance
 	ok, err := r.namingClient.RegisterInstance(r.registerParam)
 	if err != nil {
-		return errors.Wrapf(err, "nacosgrpc: failed to register %s", r.registerParam.ServiceName)
+		return err
 	}
 
 	// Check if registration was successful
 	if !ok {
-		return errors.Errorf("nacosgrpc: failed to register %s", r.registerParam.ServiceName)
+		return fmt.Errorf("nacosgrpc: failed to register %s", r.registerParam.ServiceName)
 	}
 
 	return nil
@@ -56,12 +56,12 @@ func (r *registrar) Deregister(ctx context.Context) error {
 	// Call Nacos client to deregister instance
 	ok, err := r.namingClient.DeregisterInstance(r.deregisterParam)
 	if err != nil {
-		return errors.Wrapf(err, "nacosgrpc: failed to deregister %s", r.deregisterParam.ServiceName)
+		return err
 	}
 
 	// Check if deregistration was successful
 	if !ok {
-		return errors.Errorf("nacosgrpc: failed to deregister %s", r.deregisterParam.ServiceName)
+		return fmt.Errorf("nacosgrpc: failed to deregister %s", r.deregisterParam.ServiceName)
 	}
 
 	return nil
@@ -84,7 +84,7 @@ func NewRegistrar(dsn string) (naminggrpc.Registrar, error) {
 	// Create Nacos naming client
 	client, err := clients.NewNamingClient(parsed.ClientParam)
 	if err != nil {
-		return nil, errors.Wrapf(err, "nacosgrpc: failed to create naming client")
+		return nil, err
 	}
 
 	// Return registrar instance
