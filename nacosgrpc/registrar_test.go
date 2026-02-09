@@ -1,7 +1,7 @@
 package nacosgrpc
 
 import (
-	"net/url"
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -39,26 +39,23 @@ func TestParseRegistrarDSN(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			u, err := url.Parse(tt.rawURL)
+			parsed, err := ParseDsn(context.Background(), "registrar", tt.rawURL)
 			assert.NoError(t, err)
-
-			parsed, err := parseRegistrarDSN(*u)
-			assert.NoError(t, err)
-			assert.Equal(t, tt.expectedSvc, parsed.registerParam.ServiceName)
-			assert.Equal(t, tt.expectedGrp, parsed.registerParam.GroupName)
-			assert.Equal(t, tt.expectedNs, parsed.clientParam.ClientConfig.NamespaceId)
-			assert.Equal(t, tt.expectedIp, parsed.registerParam.Ip)
-			assert.Equal(t, tt.expectedP, parsed.registerParam.Port)
+			assert.Equal(t, tt.expectedSvc, parsed.RegisterParam.ServiceName)
+			assert.Equal(t, tt.expectedGrp, parsed.RegisterParam.GroupName)
+			assert.Equal(t, tt.expectedNs, parsed.ClientParam.ClientConfig.NamespaceId)
+			assert.Equal(t, tt.expectedIp, parsed.RegisterParam.Ip)
+			assert.Equal(t, tt.expectedP, parsed.RegisterParam.Port)
 
 			if tt.name == "full registrar dsn" {
-				assert.Equal(t, 20.0, parsed.registerParam.Weight)
-				assert.Equal(t, false, parsed.registerParam.Ephemeral)
-				assert.Equal(t, "c1", parsed.registerParam.ClusterName)
-				assert.Equal(t, "val1", parsed.registerParam.Metadata["key1"])
+				assert.Equal(t, 20.0, parsed.RegisterParam.Weight)
+				assert.Equal(t, false, parsed.RegisterParam.Ephemeral)
+				assert.Equal(t, "c1", parsed.RegisterParam.ClusterName)
+				assert.Equal(t, "val1", parsed.RegisterParam.Metadata["key1"])
 
-				assert.Equal(t, "1.2.3.4", parsed.deregisterParam.Ip)
-				assert.Equal(t, uint64(9090), parsed.deregisterParam.Port)
-				assert.Equal(t, "c1", parsed.deregisterParam.Cluster)
+				assert.Equal(t, "1.2.3.4", parsed.DeregisterParam.Ip)
+				assert.Equal(t, uint64(9090), parsed.DeregisterParam.Port)
+				assert.Equal(t, "c1", parsed.DeregisterParam.Cluster)
 			}
 		})
 	}

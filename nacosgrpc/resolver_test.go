@@ -1,7 +1,7 @@
 package nacosgrpc
 
 import (
-	"net/url"
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -32,10 +32,7 @@ func TestNacosResolver_ServiceNameExtraction(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			u, err := url.Parse(tt.rawURL)
-			assert.NoError(t, err)
-
-			parsed, err := parseResolverDSN(*u)
+			parsed, err := ParseDsn(context.Background(), "resolver", tt.rawURL)
 			assert.NoError(t, err)
 			assert.Equal(t, tt.expected, parsed.SubscribeParam.ServiceName)
 		})
@@ -75,10 +72,7 @@ func TestParseDSN(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			u, err := url.Parse(tt.rawURL)
-			assert.NoError(t, err)
-
-			parsed, err := parseResolverDSN(*u)
+			parsed, err := ParseDsn(context.Background(), "resolver", tt.rawURL)
 			assert.NoError(t, err)
 			assert.Equal(t, tt.expectedSvc, parsed.SubscribeParam.ServiceName)
 			assert.Equal(t, tt.expectedGrp, parsed.SubscribeParam.GroupName)
