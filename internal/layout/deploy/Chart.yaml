@@ -1,5 +1,0 @@
-apiVersion: v2
-name: grocer
-version: 0.1.0
-description: A Helm chart for deploying the grocer application
-appVersion: "1.0.0"

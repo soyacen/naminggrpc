@@ -40,29 +40,25 @@ jobs:
           
       - name: Update version in source code
         run: |
-          # 替换 cmd/version.go 文件中的版本号
-          sed -i "s/var Version = \".*\"/var Version = \"$VERSION\"/" cmd/version.go
-
-          # 更新 internal/layout/go.mod 文件中的版本
-          sed -i "s|github.com/soyacen/grocer v[0-9]\+\.[0-9]\+\.[0-9]\+|github.com/soyacen/grocer $VERSION|g" internal/layout/go.mod
-          echo "Updated versions in internal/layout/go.mod to $VERSION"
-          sed -i "s|github.com/soyacen/grocer v[0-9]\+\.[0-9]\+\.[0-9]\+|github.com/soyacen/grocer $VERSION|g" internal/layout/go.mod
-
+          # 更新 resource/nacos/go.mod 文件中的版本
+          sed -i "s|github.com/soyacen/naminggrpc v[0-9]\+\.[0-9]\+\.[0-9]\+|github.com/soyacen/naminggrpc $VERSION|g" nacosgrpc/go.mod
+          echo "Updated version in nacosgrpc/go.mod to $VERSION"
       - name: Commit and push changes directly
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add .
+          git add nacosgrpc/go.mod
           git commit -m "chore: update version to $VERSION"
           git push
           
-      - name: Instructions for tagging
+      - name: Create and push tag
         run: |
-          git tag internal/layout/$VERSION
-          git push origin internal/layout/$VERSION
-          git tag $VERSION
-          git push origin $VERSION
-
+          git tag nacosgrpc/$VERSION
+          git push origin nacosgrpc/$VERSION
+          git tag ${{ env.VERSION }}
+          git push origin ${{ env.VERSION }}
+          echo "Tag ${{ env.VERSION }} created and pushed successfully"
+          
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
