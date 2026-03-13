@@ -7,6 +7,7 @@ import (
 	"net"
 	"slices"
 	"strconv"
+	"time"
 
 	"github.com/nacos-group/nacos-sdk-go/v2/clients"
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/naming_client"
@@ -18,6 +19,9 @@ import (
 
 // scheme defines the protocol scheme name for this resolver
 const scheme = "nacos"
+
+// defaultPollInterval is the default interval for polling service instances
+const defaultPollInterval = 5 * time.Second
 
 // init automatically registers the resolver builder when the package is imported
 func init() {
@@ -76,11 +80,48 @@ type resolver struct {
 	cc           grpcresolver.ClientConn     // Client connection interface
 	namingClient naming_client.INamingClient // Nacos naming client
 	param        vo.SubscribeParam           // Subscription parameters
+	stopCh       chan struct{}               // Channel to stop polling goroutine
+	resetCh      chan struct{}               // Channel to reset polling timer when subscription pushes
 }
 
-// start starts the resolver, performs initial service discovery and subscription
+// start starts the resolver, performs initial service discovery, 
+// and starts both subscription and polling mechanisms
 func (r *resolver) start() error {
-	// Initial retrieval of service instance list
+	// Initialize channels
+	r.stopCh = make(chan struct{})
+	r.resetCh = make(chan struct{}, 1) // Buffered to avoid blocking
+
+	// Set subscription callback function for real-time updates
+	r.param.SubscribeCallback = func(services []model.Instance, err error) {
+		if err != nil {
+			return
+		}
+		r.updateState(services)
+		// Notify polling goroutine to reset timer
+		select {
+		case r.resetCh <- struct{}{}:
+		default:
+		}
+	}
+
+	// Subscribe to service changes for real-time notifications
+	if err := r.namingClient.Subscribe(&r.param); err != nil {
+		return err
+	}
+
+	// Query initial service instance list
+	if err := r.refreshInstances(); err != nil {
+		return err
+	}
+
+	// Start background polling goroutine as a fallback mechanism
+	go r.poll()
+
+	return nil
+}
+
+// refreshInstances queries and updates the service instance list
+func (r *resolver) refreshInstances() error {
 	instances, err := r.namingClient.SelectInstances(vo.SelectInstancesParam{
 		ServiceName: r.param.ServiceName,
 		GroupName:   r.param.GroupName,
@@ -93,20 +134,34 @@ func (r *resolver) start() error {
 
 	// Update connection state
 	r.updateState(instances)
+	return nil
+}
 
-	// Set subscription callback function
-	r.param.SubscribeCallback = func(services []model.Instance, err error) {
-		if err != nil {
+// poll periodically refreshes the service instance list as a fallback.
+// When subscription pushes an update, the timer is reset to avoid immediate polling.
+func (r *resolver) poll() {
+	timer := time.NewTimer(defaultPollInterval)
+	defer timer.Stop()
+
+	for {
+		select {
+		case <-timer.C:
+			_ = r.refreshInstances()
+			// Reset timer after polling
+			timer.Reset(defaultPollInterval)
+		case <-r.resetCh:
+			// Subscription pushed an update, reset timer to delay next poll
+			if !timer.Stop() {
+				select {
+				case <-timer.C:
+				default:
+				}
+			}
+			timer.Reset(defaultPollInterval)
+		case <-r.stopCh:
 			return
 		}
-		r.updateState(services)
 	}
-
-	// Subscribe to service changes
-	if err := r.namingClient.Subscribe(&r.param); err != nil {
-		return err
-	}
-	return nil
 }
 
 // updateState updates resolver state, converting service instances to gRPC address format
@@ -146,14 +201,21 @@ func (r *resolver) updateState(instances []model.Instance) {
 	})
 
 	// Update client connection state
+	// Note: Even if addrs is empty, we still update the state.
+	// This allows gRPC to handle the empty list appropriately (e.g., entering TRANSIENT_FAILURE).
+	// When service instances become available later, the subscription callback will trigger
+	// updateState again with non-empty addresses, and the connection will recover.
 	r.cc.UpdateState(grpcresolver.State{Addresses: addrs})
 }
 
 // ResolveNow resolves the target address immediately (currently implemented as no-op)
 func (r *resolver) ResolveNow(grpcresolver.ResolveNowOptions) {}
 
-// Close closes the resolver, unsubscribes and closes the client
+// Close closes the resolver, stops polling, unsubscribes and closes the client
 func (r *resolver) Close() {
+	// Stop the polling goroutine
+	close(r.stopCh)
+	// Unsubscribe from service changes
 	_ = r.namingClient.Unsubscribe(&r.param)
 	r.namingClient.CloseClient()
 }
